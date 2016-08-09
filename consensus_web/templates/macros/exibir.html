@@ -1,0 +1,57 @@
+    {% macro list_itempauta(it, opcoes_voto, ids) %}
+
+        {% if it.titulo %}
+             <p>
+               <h3>{{ it.titulo }}</h3>
+             </p>
+        {% endif %}
+
+        {% if it.descricao %}
+        <pre>{{ it.descricao }}</pre>
+        {% endif %}
+
+        {% if it.autor %}
+            <p>
+                {{ it.autor }}
+            </p>
+        {% endif %}
+
+        {% if opcoes_voto %}
+          {% for op in opcoes_voto.get(it.num) %}
+             <strong>{{ op }} | </strong>
+          {% endfor %}
+        {% endif %}
+
+        {% if it.anexos %}
+        <p>
+            <a href="{{ url_for('main.get_files', anexos=it.anexos) }}">ver anexos</a>
+        </p>
+        {% endif %}
+
+        <p>
+            <div class="container">
+
+                <button type="button" name="link_aprovar" class="btn btn-primary" data-id="{{ it.num }}"
+                    data-target="#modal" data-toggle="modal">
+                      <strong>Aprovar</strong>
+                </button>
+
+                <input type="hidden" value="" id="num_sugestao">
+
+                <a class="btn btn-danger" role="button" data-toggle="collapse" href="#{{ ids }}"
+                   aria-expanded="false" id="btn_reprovar" aria-controls="{{ ids }}" >
+                    <strong>Reprovar</strong>
+                </a>
+            </div>
+        </p>
+        <p>
+            <div class="collapse" id="{{ ids }}">
+                <form action="{{ url_for('main.reprovar_sugestao',num_itempauta = it.num) }}" method="POST">
+                    <textarea name="justificativa" class="form-control" style="height: 60px !important;"></textarea>
+                    <br>
+                    <input type="submit" class="btn btn-default" id="confirmar" value="OK">
+                </form>
+            </div>
+        </p>
+
+    {% endmacro %}

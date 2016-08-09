@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% from 'macros/exibir_corpo_itempauta.html' import corpo_itempauta_em_tabela %}
+
+    {% block form_title %} Itens de Pauta da Assembléia {% endblock %}
+
+    {% block form %}
+        <div class="table-responsive">
+            <table class="table-bordered table-hover">
+
+                {% include '/itempauta/cabecalho_itempauta.html' %}
+
+                <tbody>
+
+                    {{ corpo_itempauta_em_tabela(itens_de_pauta, opcoes_voto) }}
+
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}

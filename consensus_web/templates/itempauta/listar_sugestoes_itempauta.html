@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+    {% from 'macros/exibir.html' import list_itempauta %}
+
+    {% block form_title %} Sugestões de Item Pauta {% endblock %}
+
+    {% block form %}
+        <div class="row">
+            {% for it,ids in itens_de_pauta %}
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                      {{ list_itempauta(it, opcoes_voto, ids) }}
+                      <br>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+
+{% set modal_title = "Rejeição de Item Pauta" %}
+
+{% set modal_msg = "Deseja confirmar a aprovação da Sugestão de Item Pauta ?" %}
+
+{% include '/modal.html' %}
+
+    {% endblock %}

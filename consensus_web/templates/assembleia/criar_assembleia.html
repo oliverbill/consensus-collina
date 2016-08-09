@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+    {% block form_title %} Criar Assembléia {% endblock %}
+
+    {% block form %}
+    <section id="criar_assembleia" >
+
+        <form role="form" id="form_criar_assembleia" class="form-horizontal" method="POST"
+              action="{{ url_for('main.criar_assembleia') }}">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"> Data de Início: </label>
+                <div class="col-sm-10">
+                    <div class='input-group date' id='data_inicio' style="width: 50% !important">
+                        <input type='text' class="form-control" id="data_inicio_text"
+                               name="data_inicio_text">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"> Data Fim: </label>
+                <div class="col-sm-10">
+                    <div class='input-group date' id='data_fim' style="width: 50% !important">
+                        <input type='text' class="form-control" id="data_fim_text" name="data_fim_text">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+
+                    <div class="has-warning">
+                        <span id="help" class="help-block">Data fim preenchida automaticamente como sugestão </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                 <div class="col-sm-offset-2 col-sm-10">
+                    <input type="submit" class="btn btn-primary" value="Criar Assembléia">
+                </div>
+            </div>
+
+        </form>
+
+    </section>
+    {% endblock %}

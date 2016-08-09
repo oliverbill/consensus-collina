@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+
+    {% block form_title %} Assembleias Encerradas {% endblock %}
+
+    {% block form %}
+        <form action="{{ url_for('main.listar_itens_de_pauta_da_assembleia') }}" method="post">
+            <ul class="list-group">
+            {% for a in assembleias %}
+                <li class="post">
+                    <div class="profile-thumbnail">
+                    </div>
+                    <div class="post-body">
+                        <button role="link" type="submit" class="btn btn-link" id="link_num_assembleia" value="{{ a.num }}" >
+                            <strong>Número da Assembléia:</strong> {{ a.num }}
+                        </button>
+                    </div>
+            {% endfor %}
+            </ul>
+        </form>
+    {% endblock %}

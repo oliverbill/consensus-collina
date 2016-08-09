@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+    {% block form_title %} Itens de Pauta Em Votação {% endblock %}
+
+    {% block form %}
+    <form action="{{ url_for('main.votar_itempauta') }}" method="POST">
+        <div class="table-responsive">
+            <table class="table-bordered table-hover">
+
+                {% include '/cabecalho_itempauta.html' %}
+
+                <tbody>
+                    {% for it in itens_de_pauta %}
+                    <tr class="text-center">
+                        <td class="text-center">{{ it.titulo }}</td>
+                        <td class="text-center">{{ it.descricao }}</td>
+                        <td class="text-center"> <span class="label label-info "> {{ it.status }} </span> </td>
+                        <td class="text-center">{{ it.autor }}</td>
+                        <td class="text-center">{{ it.assembleia }}</td>
+                        <td class="text-center">
+                            {% for op in opcoes_voto.get(it.num) %}
+                            <p>
+                                <button type="submit" id="link_op_voto" class="btn btn-default"
+                                    name="link_op_voto" value="{{op}} {{it.num}}" >
+                                        <strong>{{ op }}</strong>
+                                </button>
+                            </p>
+                            {% endfor %}
+                        </td>
+                        <td class="text-center">
+                            {% for a in it.anexos %}
+                            <p>
+                                <a href="{{ url_for('main.get_file', filename=a.path) }}">ver anexo</a>
+                            </p>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+    {% endblock %}

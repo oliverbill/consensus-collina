@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+    {% block form_title %} Assembleias Em Andamento {% endblock %}
+
+    {% block form %}
+
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.locale('pt-BR') }}
+
+        <div class="row">
+            {% for a in assembleias %}
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                      <p>
+                          iniciada à
+                          <span class="label label-default" id="data-inicio" >
+                               {{ moment(dt_inicio).fromTime(agora, refresh=True) }}
+                          </span>
+                      </p>
+                      <p>
+                           termina em
+                            <span class="label label-danger"> {{ a.dataHoraFim }}</span>
+                      </p>
+                      <p>
+                          <div class="well"><h3 align="center">Assembléia {{ a.num }}</h3></div>
+                      </p>
+                      <p align="center">
+                            <a role="button" class="btn btn-primary"
+                                 href="{{ url_for('main.listar_itens_de_pauta_da_assembleia',
+                                            num_assembleia=a.num, status='EM_VOTACAO') }}">
+                                <span class="glyphicon glyphicon-list-alt"></span> Itens de Pauta
+                            </a>
+                      </p>
+                  </div>
+
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+
+    {% endblock %}
