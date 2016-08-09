@@ -11,3 +11,9 @@ Suas principais funcionalidades são:
 - Votar Item de Pauta
 - Responder Sugestão de Item de Pauta
 - Consultar Assembléia e Sugestões de Item de Pauta
+
+As tecnologias utilizadas são:
+
+- Bootstrap 3, JQuery 1.11.3 e HTML 5
+- Python 3.5 com Flask framework 0.11.1
+- Banco de dados MySQL 5.4
