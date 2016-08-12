@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms.fields import StringField, BooleanField, SubmitField, PasswordField, TextAreaField, \
-    SelectField, FieldList
+    SelectField
 from wtforms.validators import DataRequired, Email
 
 from consensus_web.models import OpcaoVoto
@@ -23,13 +23,12 @@ class LoginForm(Form):
 
 
 class SugerirItemPautaForm(Form):
-    titulo = StringField(u'Título: ', validators=[DataRequired()])
-    descricao = TextAreaField(u'Descrição: ', validators=[DataRequired()])
+    titulo = StringField(u'Título: ', validators=[DataRequired("campo obrigatório")])
+    descricao = TextAreaField(u'Descrição: ', validators=[DataRequired("campo obrigatório")])
 #    assembleia = SelectField(u'Assembléia: ', coerce=int)
     autor = StringField('Autor: ')
 #    anexos = FileField('Anexo: ')
     votacao = SelectField(u'Opções de Voto: ', coerce=int)
-    votacao_outros = FieldList(StringField(''), min_entries=2)
     salvar = SubmitField(u'Salvar Sugestão',render_kw={"class":"btn btn-default"})
 #    fazer_upload = SubmitField(u'Fazer Upload')
 

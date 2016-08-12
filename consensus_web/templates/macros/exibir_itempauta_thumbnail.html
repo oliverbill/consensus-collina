@@ -1,0 +1,33 @@
+{% macro list_itempauta(it, opcoes_voto) %}
+
+    {% if it.titulo %}
+     <p>
+       <h3>{{ it.titulo }}</h3>
+     </p>
+    {% endif %}
+
+    {% if it.descricao %}
+    <pre>{{ it.descricao }}</pre>
+    {% endif %}
+
+    {% if it.autor %}
+        <p>
+            {{ it.autor }}
+        </p>
+    {% endif %}
+
+    {% if opcoes_voto %}
+    <p>
+      {% for op in opcoes_voto.get(it.num) %}
+        <strong>{{ op }} | </strong>
+      {% endfor %}
+    </p>
+    {% endif %}
+
+    {% for a in it.anexos %}
+    <p>
+        <a href="{{ a.url_download }}">{{a.nome}}</a>
+    </p>
+    {% endfor %}
+
+{% endmacro %}

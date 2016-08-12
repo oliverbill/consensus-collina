@@ -10,7 +10,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     ADMIN_USER = os.environ.get('ADMIN_USER')
-    ALLOWED_EXTENSIONS = set(['pdf', 'jpeg', 'bmp', 'jpg', 'png', 'gif'])
+    ALLOWED_EXTENSIONS = set(['pdf', 'jpeg', 'bmp', 'jpg', 'png', 'gif', 'txt', 'doc', 'docx', 'xls', 'xlsx'])
 
     @staticmethod
     def init_app(app):
@@ -23,7 +23,7 @@ class DevelopmentConfig(Config):
     UPLOAD_FOLDER = os.environ.get('CONSENSUS_UPLOAD_FOLDER')
     THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
-    MAX_FILE_SIZE = 5000000  # 5 MB
+    MAX_FILE_SIZE = 500000000  # 5 MB
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
 
 

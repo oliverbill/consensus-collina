@@ -1,17 +1,16 @@
-{% macro exibir_assembleias_e_sugestoes(assembleia) %}
+{% macro exibir_assembleias_e_sugestoes(assembleia, opcoes_voto) %}
+
+{% from 'macros/exibir_itempauta_thumbnail.html' import list_itempauta %}
 
 <div class="panel panel-default">
     <div class="panel-heading">
 <!--  panel fica sempre aberto p/ não esconder as sugestões adicionadas
       <div class="container" data-toggle="collapse" data-target="#div-sugestoes{{ id }}"> -->
-
             <h3 class="panel-title form-center" align="center">
                 <strong><u> Assembléia {{ assembleia.num }} </u> - </strong>
                 inicia em <span class="label label-danger"> {{ assembleia.dataHoraInicio }}</span>
                 termina em <span class="label label-warning"> {{ assembleia.dataHoraFim }} </span>
             </h3>
-
-
     </div>
 
     <div class="panel-body">
@@ -21,16 +20,7 @@
               <div class="col-sm-6 col-md-4">
                 <div class="thumbnail">
                   <div class="caption">
-                      <p><strong> Item Pauta #{{ sug.num }} </strong></p>
-                      <p>
-                          <div class="well"><h3 align="center">{{ sug.titulo }}</h3></div>
-                      </p>
-                      <p> por {{ sug.autor }}</p>
-                      {% if sug.anexos %}
-                      <p>
-                          <a href="{{ url_for('main.get_files', anexos=sug.anexos) }}">ver anexos</a>
-                      </p>
-                      {% endif %}
+                      {{ list_itempauta(sug, opcoes_voto) }}
                   </div>
 
                 </div>

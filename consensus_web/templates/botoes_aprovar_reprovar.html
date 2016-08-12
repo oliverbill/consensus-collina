@@ -1,0 +1,22 @@
+<p>
+    <button type="button" name="link_aprovar" class="btn btn-primary" data-id="{{ it.num }}"
+        data-target="#modal" data-toggle="modal">
+          <strong>Aprovar</strong>
+    </button>
+
+    <input type="hidden" value="" id="num_sugestao">
+
+    <a class="btn btn-danger" role="button" data-toggle="collapse" href="#{{ ids }}"
+       aria-expanded="false" id="btn_reprovar" aria-controls="{{ ids }}" >
+        <strong>Reprovar</strong>
+    </a>
+</p>
+<p>
+    <div class="collapse" id="{{ ids }}">
+        <form action="{{ url_for('main.reprovar_sugestao',num_itempauta = it.num) }}" method="POST">
+            <textarea name="justificativa" class="form-control" style="height: 60px !important;"></textarea>
+            <br>
+            <input type="submit" class="btn btn-default" id="ok" value="OK">
+        </form>
+    </div>
+</p>

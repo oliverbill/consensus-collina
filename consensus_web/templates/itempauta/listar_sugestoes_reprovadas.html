@@ -1,53 +1,30 @@
 {% extends "index.html" %}
 
-    {% block form_title %} Sugestões de Item Pauta Rejeitadas {% endblock %}
+{% from 'macros/exibir_itempauta_thumbnail.html' import list_itempauta %}
 
-    {% block form %}
-        <div class="row">
-            {% for it in itens_de_pauta %}
-              <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                  <div class="caption">
-                        <form action="{{ url_for('main.desfazer_rejeicao', num_sugestao = it.num) }}" method="POST">
-                            {% if it.titulo %}
-                                 <p>
-                                   <h3>{{ it.titulo }}</h3>
-                                 </p>
-                            {% endif %}
+{% block form_title %} Sugestões de Item Pauta Reprovadas {% endblock %}
 
-                            {% if it.descricao %}
-                                <pre>{{ it.descricao }}</pre>
-                            {% endif %}
+{% block form %}
+<div class="row" align="center">
+    {% for it in itens_de_pauta %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption">
+                <form action="{{ url_for('main.desfazer_reprovacao', num_sugestao = it.num) }}" method="POST">
 
-                            {% if it.autor %}
-                                <p>
-                                    {{ it.autor }}
-                                </p>
-                            {% endif %}
+                    {{ list_itempauta(it, opcoes_voto) }}
 
-                            {% if opcoes_voto %}
-                              {% for op in opcoes_voto.get(it.num) %}
-                                 <strong>{{ op }} | </strong>
-                              {% endfor %}
-                            {% endif %}
+                    {% if it.justif_reprovacao %}
+                        <pre>{{ it.justif_reprovacao }}</pre>
+                    {% endif %}
 
-                            {% if it.anexos %}
-                            <p>
-                                <a href="{{ url_for('main.get_files', anexos=it.anexos) }}">ver anexos</a>
-                            </p>
-                            {% endif %}
-
-                            {% if it.justif_reprovacao %}
-                                <pre>{{ it.justif_reprovacao }}</pre>
-                            {% endif %}
-
-                            <p align="center">
-                                <input type="submit" class="btn btn-danger" id="desfazer" value="Desfazer">
-                            </p>
-                        </form>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
+                    <p align="center">
+                        <input type="submit" class="btn btn-danger" id="desfazer" value="Desfazer">
+                    </p>
+                </form>
+          </div>
         </div>
-    {% endblock %}
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}

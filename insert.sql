@@ -37,6 +37,11 @@ INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('PUBLICAR_COMUNICADO');
 INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('VOTAR_ITEM_PAUTA');
 INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('COMENTAR_ITEM_PAUTA');
 INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('LISTAR_ASSEMBLEIAS');
+INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('CRIAR_ASSEMBLEIA');
+INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('ALTERAR_ASSEMBLEIA');
+INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('ATRIBUIR_ASSEMBLEIA');
+INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('DESFAZER_REJEICAO');
+INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('LISTAR_ITEM_PAUTA');
 
 INSERT INTO `consensus`.`roles`(`nome`) VALUES('ADMINISTRADORES DO SISTEMA');
 INSERT INTO `consensus`.`roles`(`nome`) VALUES('MORADORES');
@@ -72,4 +77,8 @@ VALUES ('alves.bill@gmail.com','pbkdf2:sha1:1000$KYl6HeL0$9dfed60d4b31e7533f529a
 INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`idade`,`genero`)
 VALUES ('bicuda@gmail.com','pbkdf2:sha1:1000$FMeVVA7l$fc308f7797fb05e714467075b6fb9ec06ff25f60',3,
 		'Estela','Bicuda','55','F');-- senha caracas
+
+INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`idade`,`genero`)
+VALUES ('superman@gmail.com','pbkdf2:sha1:1000$MNTOcpCz$77954fd0c6161a52efba94b99c1a0aca63d7155b',2,
+		'Kal','El','255','M'); -- senha crypton
 

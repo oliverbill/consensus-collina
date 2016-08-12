@@ -1,22 +1,25 @@
 import os
 
+
 class uploadfile():
-    def __init__(self, name, type=None, size=None, not_allowed_msg=''):
+    def __init__(self, name, type=None, size=None ,not_allowed_msg=''):
+# url que será retornada no objeto json.
+# É usada para recuperar o arquivo e exibí-lo para download, e portanto, precisa ter "http://host"
+# O path da 'UPLOAD_FOLDER' é diferente, pois é usado para SALVAR o arquivo e portanto, contém o path absoluto do file system
+        upload_url = "http://localhost:5000/data"
         self.name = name
         self.type = type
         self.size = size
         self.not_allowed_msg = not_allowed_msg
-        self.url = "data/%s" % name
-        self.thumbnail_url = "thumbnail/%s" % name
-        self.delete_url = "delete/%s" % name
+        self.url = upload_url+"/%s" % name
+        self.thumbnail_url = upload_url+"/thumbnail/%s" % name
+        self.delete_url = upload_url+"/delete/%s" % name
         self.delete_type = "DELETE"
 
     def is_image(self):
         fileName, fileExtension = os.path.splitext(self.name.lower())
-
         if fileExtension in ['.jpg', '.png', '.jpeg', '.bmp']:
             return True
-
         return False
 
     def get_file(self):

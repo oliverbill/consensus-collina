@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from flask import Flask
-from flask_bootstrap3 import Bootstrap
 from flask_login import LoginManager
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config_map
 
 db = SQLAlchemy()
-bootstrap = Bootstrap()
 login_manager = LoginManager()
 ## keep track of the client’s IP address and browser agent and will log the user out if it detects a change
 login_manager.session_protection = 'strong'
@@ -29,7 +27,6 @@ def create_app(config_name):
 
 # inicializa Flask extensions
     db.init_app(app)
-    bootstrap.init_app(app)
     login_manager.init_app(app)
     moment.init_app(app)
 # retorna app configurada

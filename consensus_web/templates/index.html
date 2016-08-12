@@ -1,238 +1,149 @@
-<!doctype html>
-<html style="overflow:auto">
+{% extends "template_base.html" %}
 
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+{% block navbar %}
 
-    <title>Sistema Consensus - {% block form_title %} {% endblock %} </title>
+<nav class="navbar navbar-default no-margin">
+<!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header fixed-brand">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  id="menu-toggle">
+          <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+        </button>
+        <a class="navbar-brand" href="#">OLIVERSYS</a>
+    </div><!-- navbar-header-->
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li class="active">
+                <button class="navbar-toggle collapse in"  data-toggle="collapse" id="menu-toggle-2">
+                <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></button>
+            </li>
+        </ul>
+        <h3 align="center">{% block form_title %} {% endblock %}</h3>
+    </div><!-- bs-example-navbar-collapse-1 -->
+</nav>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/blueimp-gallery.min.css') }}">
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-    <!-- Custom Fonts -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome/css/font-awesome.min.css') }}">
+            <li>
+                <a href="{{ url_for('main.index') }}">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-dashboard fa-stack-1x "></i>
+                    </span>
+                    Home
+                </a>
+            </li>
 
-    <!-- blueimp Gallery styles -->
-    <link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload-ui.css') }}">
-
-<!-- CSS adjustments for browsers with JavaScript disabled -->
-    <noscript><link rel="stylesheet" href="css/jquery.fileupload-noscript.css"></noscript>
-    <noscript><link rel="stylesheet" href="css/jquery.fileupload-ui-noscript.css"></noscript>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
-
-</head>
-
-<body>
-
-    <nav class="navbar navbar-default no-margin">
-    <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header fixed-brand">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  id="menu-toggle">
-              <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-            </button>
-            <a class="navbar-brand" href="#">OLIVERSYS</a>
-        </div><!-- navbar-header-->
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active">
-                    <button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2">
-                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></button>
-                </li>
-            </ul>
-        </div><!-- bs-example-navbar-collapse-1 -->
-    </nav>
-
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-
-                <li>
-                    <a href="{{ url_for('main.index') }}">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-dashboard fa-stack-1x "></i>
-                        </span>
-                        Home
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-flag fa-stack-1x "></i>
-                        </span> Sugestão de Item Pauta
-                    </a>
+            <li>
+                <a href="#">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-flag fa-stack-1x "></i>
+                    </span> Sugestão de Item Pauta
+                </a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="{{ url_for('main.sugerir_itempauta') }}">
+                            Criar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.listar_sugestoes_sem_avaliacao') }}">
+                            Avaliar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.listar_sugestoes_reprovadas') }}">
+                            Listar Reprovadas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.atribuir_sugestoes_a_assembleia') }}">
+                            Atribuir à Assembléia
+                        </a>
+                    </li>
+                </ul>
+                <a href="#">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-flag fa-stack-1x "></i>
+                    </span> Item de Pauta
+                </a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="{{ url_for('main.votar_itempauta') }}">
+                            Votar
+                        </a>
+                    </li>
+                </ul>
+                <a href="#">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-flag fa-stack-1x "></i>
+                    </span> Assembléia
+                </a>
                     <ul class="nav-pills nav-stacked" style="list-style-type:none;">
                         <li>
-                            <a href="{{ url_for('main.sugerir_itempauta') }}">
+                            <a href="{{ url_for('main.criar_assembleia') }}">
                                 Criar
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('main.listar_sugestoes_sem_resposta') }}">
-                                Responder
+                            <a href="{{ url_for('main.listar_assembleias',status=1) }}">
+                                Aguardando Início
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('main.listar_sugestoes_reprovadas') }}">
-                                Listar Reprovadas
+                            <a href="{{ url_for('main.listar_assembleias',status=2) }}">
+                                Em Andamento
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('main.atribuir_sugestoes_a_assembleia') }}">
-                                Atribuir à Assembléia
+                            <a href="{{ url_for('main.listar_assembleias',status=3) }}">
+                                Encerradas
                             </a>
                         </li>
                     </ul>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-flag fa-stack-1x "></i>
-                        </span> Item de Pauta
-                    </a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="{{ url_for('main.listar_item_pauta_em_votacao') }}">
-                                Em Votação
-                            </a>
-                        </li>
-                    </ul>
+            </li>
 
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-flag fa-stack-1x "></i>
-                        </span> Assembléia
-                    </a>
-                        <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li>
-                                <a href="{{ url_for('main.criar_assembleia') }}">
-                                    Criar
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('main.listar_assembleias',status=1) }}">
-                                    Aguardando Início
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('main.listar_assembleias',status=2) }}">
-                                    Em Andamento
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('main.listar_assembleias',status=3) }}">
-                                    Encerradas
-                                </a>
-                            </li>
-                        </ul>
-                </li>
+            <li class="divider"></li>
 
-                <li class="divider"></li>
+            {% if current_user.is_authenticated %}
 
-                {% if current_user.is_authenticated %}
+            <li>
+                <a href="{{ url_for('auth.logout') }}">
+                    <span><i class="glyphicon glyphicon-off"></i></span>
+                    Sair
+                </a>
+            </li>
 
-                <li>
-                    <a href="{{ url_for('auth.logout') }}">
-                        <span><i class="glyphicon glyphicon-off"></i></span>
-                        Sair
-                    </a>
-                </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for('auth.login') }}">
+                    <span><i class="fa fa-user fa-lg"></i></span>
+                     Entrar
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div><!-- /#sidebar-wrapper -->
 
-                {% else %}
-                <li>
-                    <a href="{{ url_for('auth.login') }}">
-                        <span><i class="fa fa-user fa-lg"></i></span>
-                         Entrar
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </div><!-- /#sidebar-wrapper -->
 
-        <!-- CONTEUDO DA PAGINA -->
-
-        <div id="page-content-wrapper">
-            <div class="container-fluid xyz">
-            {% block form %} {% endblock %}
-            </div>
-            <br>
-            {% for message in get_flashed_messages() %}
-            <div class="alert alert-success" role="alert">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <span class="sr-only"></span>
-                {{ message }}
-            </div>
-            {% endfor %}
+    <!-- CONTEUDO DA PAGINA -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid xyz">
+        {% block form %} {% endblock %}
         </div>
-        <!-- /#page-content-wrapper -->
+        <br>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-success" role="alert"  align="center">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <span class="sr-only"></span>
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
-    <!-- /#wrapper -->
+    <!-- /#page-content-wrapper -->
 
-    <script src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/sidebar_menu.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/moment.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pt-br.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/sugerir_itempauta.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/criar_assembleia.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/atribuir_a_assembleia.js') }}"></script>
-
-
-
-<script src="{{ url_for('static', filename='js/vendor/jquery.ui.widget.js') }}"></script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-
-<script src="{{ url_for('static', filename='js/tmpl.min.js') }}"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-
-<script src="{{ url_for('static', filename='js/load-image.all.min.js') }}"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-
-<script src="{{ url_for('static', filename='js/canvas-to-blob.min.js') }}"></script>
-
-<!-- blueimp Gallery script -->
-<script src="{{ url_for('static', filename='js/jquery.blueimp-gallery.min.js') }}"></script>
-
-<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="{{ url_for('static', filename='js/jquery.iframe-transport.js') }}"></script>
-<!-- The basic File Upload plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload.js') }}"></script>
-<!-- The File Upload processing plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-process.js') }}"></script>
-<!-- The File Upload image preview & resize plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-image.js') }}"></script>
-<!-- The File Upload audio preview plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-audio.js') }}"></script>
-<!-- The File Upload video preview plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-video.js') }}"></script>
-<!-- The File Upload validation plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-validate.js') }}"></script>
-<!-- The File Upload user interface plugin -->
-<script src="{{ url_for('static', filename='js/jquery.fileupload-ui.js') }}"></script>
-<!-- The main application script -->
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
-<!--[if (gte IE 8)&(lt IE 10)]>
-<script src="{{ url_for('static', filename='js/cors/jquery.xdr-transport.js') }}"></script>
-<![endif]-->
-
-</body>
-</html>
+</div>
+<!-- /#wrapper -->
+{% endblock %}

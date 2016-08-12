@@ -27,6 +27,7 @@
                       <p>
                           <div class="well"><h3 align="center">Assembléia {{ a.num }}</h3></div>
                       </p>
+                      {% if a.itemsPautas %}
                       <p align="center">
                           <a role="button" class="btn btn-primary"
                              href="{{ url_for('main.listar_itens_de_pauta_da_assembleia',
@@ -34,6 +35,7 @@
                             <span class="glyphicon glyphicon-list-alt"></span> Itens de Pauta
                           </a>
                       </p>
+                      {% endif %}
                   </div>
 
                 </div>

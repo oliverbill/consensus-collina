@@ -1,17 +1,24 @@
 {% extends "index.html" %}
 {% from 'macros/exibir_corpo_itempauta.html' import corpo_itempauta_em_tabela %}
 
-    {% block form_title %} Itens de Pauta da Assembléia {% endblock %}
+    {% block form_title %} Itens de Pauta da Assembléia {{ num_assembleia }} {% endblock %}
 
     {% block form %}
-        <div class="table-responsive">
+        <div class="table-responsive" align="center">
             <table class="table-bordered table-hover">
-
-                {% include '/itempauta/cabecalho_itempauta.html' %}
-
+                <thead>
+                    <tr>
+                        <th class="text-center">Título</th>
+                        <th class="text-center">Descrição</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Autor</th>
+                        <th class="text-center">Opções de Voto</th>
+                        <th class="text-center">Anexos</th>
+                    </tr>
+                </thead>
                 <tbody>
 
-                    {{ corpo_itempauta_em_tabela(itens_de_pauta, opcoes_voto) }}
+                    {{ corpo_itempauta_em_tabela(itens_de_pauta, opcoes_voto, ocultar_status) }}
 
                 </tbody>
             </table>

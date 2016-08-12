@@ -1,24 +1,22 @@
 from flask import flash, redirect, render_template, url_for
+from flask_login import current_user
 
-from ..models import AnexoModel,OpcaoVoto, Voto, SugestaoItemPauta, ItemPauta
+from ..models import AnexoModel,OpcaoVoto, Voto, SugestaoItemPauta, ItemPauta, AnexoTemp
 
 
-def incluir_anexos(session,db):
-    anexos = []
-    if session.get('paths_anexos'):
-        for p in session['paths_anexos']:
-            a = AnexoModel(p)
-            db.session.add(a)
-            db.session.commit()
-            anexos.append(a)
-    return anexos
+def incluir_anexos(db, num_sugestao):
+    arquivos_usuario_subiu = AnexoTemp.query.filter(AnexoTemp.usuario == current_user.id).all()
+    for f in arquivos_usuario_subiu:
+        a = AnexoModel(url=f.url_download,nome=f.nome)
+        a.sugestao_itempauta = num_sugestao
+        db.session.add(a)
+        db.session.delete(f) # remove da tabela temporária
+    db.session.commit()
 
-def incluir_opcao_voto(form, db):
+def incluir_opcao_voto(combo_votacao_outros, db):
     valor = set()
-    for o in form.votacao_outros:
-        valor.add(o.data)
-    for r in o.raw_data:
-        valor.add(r)
+    for o in combo_votacao_outros:
+        valor.add(o)
     vl_formatado = '/ '.join(valor)
     nova_op = OpcaoVoto(vl_formatado)
     db.session.add(nova_op)
@@ -51,7 +49,7 @@ def remover_itens_ja_votados(itens_pauta_sugeridos, current_user):
             itens_pauta_nao_votados.append(it)
     return itens_pauta_nao_votados
 
-def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, *template):
+def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, num_assembleia = None, template = None):
     if not itens_pauta:
         flash(msg)
         return redirect(url_for('main.index'))
@@ -64,4 +62,5 @@ def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, *template):
 
     return render_template(template or "itempauta/listar_itenspauta.html",
                            itens_de_pauta=itens_pauta,
-                           opcoes_voto=opcoes_voto)
+                           opcoes_voto=opcoes_voto,
+                           num_assembleia = num_assembleia)

@@ -27,5 +27,7 @@ def test():
 
 
 if __name__ == '__main__':
-    os.environ.setdefault("CONSENSUS_UPLOAD_FOLDER", "/home/30258767863/python/Flask Projects/consensus/UPLOADS")
+#    print(app.root_path)
+    os.environ.setdefault("CONSENSUS_UPLOAD_FOLDER", app.root_path+"/data/")
+#    print(os.environ.get('CONSENSUS_UPLOAD_FOLDER'))
     manager.run().run(debug=True)

@@ -70,7 +70,6 @@ class Assembleia(db.Model):
 
 class StatusItemPauta(Enum):
      CRIADO = 'CRIADO'  # apos aprovacao da sugestao pela sindica
-     REPROVADO = 'REPROVADO'  # apos reprovação da sugestao pela sindica
      EM_VOTACAO = 'EM_VOTACAO' # apos atribuição de assembleia
      QUESTIONADO = 'QUESTIONADO'  # por suspeita de infringir o RI
      ANULADO = 'ANULADO'  # caso questionamento seja aceito
@@ -98,15 +97,31 @@ class OpcaoVoto(db.Model):
         return self.__num
 
 
+class ComentariosItemPauta(db.Model):
+    __tablename__ = 'comentarios'
+
+    __num = db.Column(db.BigInteger, primary_key=True, autoincrement=True, name="num")
+    texto = db.Column(db.String(255), unique=True, nullable=False)
+
+    itempauta = db.Column(db.BigInteger, db.ForeignKey('itemspautas.num'), nullable=False, name="num_itempauta")
+
+    def __init__(self, texto, it):
+        super(ComentariosItemPauta, self).__init__()
+        self.texto = texto
+        self.itempauta = it
+
+
 class ItemPauta(db.Model):
     __tablename__ = 'itemspautas'
 
     __num = db.Column(db.BigInteger,primary_key=True, autoincrement=True, name="num")
-    status = db.Column(db.String(70), server_default='APROVADO')
+    status = db.Column(db.String(70), server_default='CRIADO')
 
     assembleia = db.Column(db.BigInteger, db.ForeignKey('assembleias.num'), nullable=False, name="num_assembleia")
     sugestao_itempauta = db.Column(db.BigInteger, db.ForeignKey('sugestoes_itempauta.num'),
                                    name="num_sugestao", nullable=False)
+
+    comentarios = db.relationship("ComentariosItemPauta", backref="itemspautas", cascade="all, delete-orphan")
 
     def __init__(self, assembleia, sugestao):
         super(ItemPauta, self).__init__()
@@ -122,13 +137,19 @@ class ItemPauta(db.Model):
         return self.__num
 
 
+class StatusSugestao(Enum):
+    NAO_AVALIADO = 'NAO_AVALIADA'
+    APROVADO = 'APROVADA'
+    REPROVADO = 'REPROVADA'  # apos reprovação da sugestao pela sindica
+    ATRIBUIDO = 'ATRIBUIDA'  # apos atribuicao a itempauta
+
 class SugestaoItemPauta(db.Model):
     __tablename__ = 'sugestoes_itempauta'
 
     __num = db.Column(db.BigInteger,primary_key=True, autoincrement=True, name="num")
     titulo = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.String(255), nullable=False)
-    status_aprovado = db.Column(db.String(1)) # S:sim, N:nao(reprovado), ' ':ainda nao avaliado
+    status = db.Column(db.String(70), server_default='NAO_AVALIADA')
     justif_reprovacao = db.Column(db.String(255))
 
     autor = db.Column(db.String(70), db.ForeignKey('usuarios.id'), name="email_autor", nullable=False)
@@ -172,22 +193,33 @@ class AnexoModel(db.Model):
     __tablename__ = 'anexos'
 
     __num = db.Column(db.BigInteger, name="num", autoincrement=True, primary_key=True)
-    pathArquivo = db.Column(db.String(50), name="path", nullable=False)
-## o usuario pode mudar o nome do arquivo depois no Google Drive e portanto, invalidar a URL
-#     _urlsGoogleDrive = db.Column(db.String(255), name="url_google_drive")
+## O usuario pode mudar o nome do arquivo depois no Google Drive e portanto, invalidar a URL.
+## Portanto,é melhor gravar o usuário do google drive,e na hora de exibir, conectar e trazer os arquivos salvos.
+## Na sugestao de item pauta, colocar um botao do "google sign in"
     usuarioGoogleDrive = db.Column(db.String(70), name="usuario_google_drive")
+    sugestao_itempauta = db.Column(db.BigInteger, db.ForeignKey('sugestoes_itempauta.num'), nullable=False)
+    nome = db.Column(db.String(100), nullable=False)
+    url_download = db.Column(db.String(255), nullable=False)
 
-# nao é atualizado pq na criacao da sug item pauta, ainda nao tem a PK
-    sugestao_itempauta = db.Column(db.BigInteger, db.ForeignKey('sugestoes_itempauta.num'),nullable=False)
-
-    def __init__(self, path, usuarioGoogleDrive=None):
+    def __init__(self, url, nome, usuarioGoogleDrive=None):
         super(AnexoModel, self).__init__()
-        self.pathArquivo = path
         self.usuarioGoogleDrive = usuarioGoogleDrive
+        self.url_download = url
+        self.nome = nome
 
-    @property
-    def path(self):
-        return self.pathArquivo
+class AnexoTemp(db.Model):
+    __tablename__ = 'anexos_temp'
+
+    __num = db.Column(db.BigInteger, name="num", autoincrement=True, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    url_download = db.Column(db.String(255), nullable=False)
+    usuario = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, nome_arquivo, url, usuario):
+        super(AnexoTemp, self).__init__()
+        self.nome = nome_arquivo
+        self.url_download = url
+        self.usuario = usuario
 
 
 class User(db.Model,UserMixin):
@@ -279,7 +311,7 @@ class Role(db.Model):
 class ConsensusTask(Enum):
     ADMINISTRAR_SISTEMA = 'ADMINISTRAR_SISTEMA'
     SUGERIR_ITEM_PAUTA = 'SUGERIR_ITEM_PAUTA'
-    RESPONDER_SUGESTAO_ITEM_PAUTA = 'RESPONDER_SUGESTAO_ITEM_PAUTA'
+    AVALIAR_SUGESTAO_ITEM_PAUTA = 'AVALIAR_SUGESTAO_ITEM_PAUTA'
     GERAR_ATA_ASSEMBLEIA = 'GERAR_ATA_ASSEMBLEIA'
     QUESTIONAR_ITEM_PAUTA = 'QUESTIONAR_ITEM_PAUTA'
     EXCLUIR_ITEM_PAUTA = 'EXCLUIR_ITEM_PAUTA'

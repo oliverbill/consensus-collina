@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
 
+// se o usuario selecionar outros, mostra o div com as 2 textbox para informar outras opções de voto
     $('#combo_votacao').on('change', function()  {
-
         var option = $(this).find("option:selected").text();
 
         if (option.indexOf('outras') > -1){
@@ -9,42 +9,18 @@ jQuery(document).ready(function() {
         }else{
             $('#div_votacao_outros').hide()
         }
-
-
       }
      );
 
+// adiciona mais uma textbox de opção de voto (além das 2 acima) para cada click no botão
     $('#add_opcao_voto').on('click',function(e)  {
         e.preventDefault();
-        index = $('#combo_votacao_outros').last().index();
-        nomeIncrementado = "votacao_outros-" + index
-        $('#form_sugerir_itempauta')
-            .append(
-                $(
-                    '<br><input name="'+nomeIncrementado+'"/>')
-                 );
-        index++
-      }
-    );
+          $('#combo_votacao_outros').append( $('<br><input name="txt_outra_opcao" class="form-control" style="width:50%"/>') );
+     });
 
-    $(function() {
-    $('#upload-file-btn').click(function(e) {
-        e.preventDefault();
-        var form_data = new FormData($('#form_sugerir_itempauta')[0]);
-        $.ajax({
-                type: 'POST',
-                url: '/sugerir-item-pauta/upload',
-                data: form_data,
-                contentType: false,
-                cache: false,
-                processData: false,
-                async: false,
-                success: function(data) {
-                    console.log('Sucesso !');
-                },
-            });
-        });
-    });
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })
 
 });
 
