@@ -36,7 +36,7 @@ def listar_itens_de_pauta_status(status):
     itens_pauta = ItemPauta.query \
         .filter(ItemPauta.status == status).all()
     return nenhum_itempauta_ou_listar_com_op_voto\
-        (u"Não há Itens de Pauta com situação " + status, itens_pauta)
+        (msg=u"Não há Itens de Pauta com situação " + status, itens_pauta=itens_pauta)
 
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
@@ -47,23 +47,8 @@ def listar_itens_de_pauta_da_assembleia(num_assembleia):
         .filter(ItemPauta.assembleia == num_assembleia).all()
 
     return nenhum_itempauta_ou_listar_com_op_voto\
-         (u"Não há Itens de Pauta para a Assembléia selecionada", itens_pauta, num_assembleia)
-
-#
-# @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
-# @main.route('/listar-itempauta-em-votacao/', methods = ['GET'])
-# @login_required
-# def listar_item_pauta_em_votacao():
-#     itens_pauta_sugeridos = ItemPauta.query.filter(ItemPauta.status == 'EM_VOTACAO').all()
-#     if not itens_pauta_sugeridos:
-#         flash(u"Não há Itens de Pauta EM VOTAÇÃO")
-#         return redirect(url_for('main.index'))
-#
-#     itens_pauta_nao_votados_pelo_usuario = remover_itens_ja_votados(itens_pauta_sugeridos, current_user)
-#
-#     return nenhum_itempauta_ou_listar_com_op_voto \
-#         (u"Não há Itens de Pauta PENDENTES de voto por você", itens_pauta_nao_votados_pelo_usuario,
-#             is_consulta_em_votacao=True)
+         (msg=u"Não há Itens de Pauta para a Assembléia selecionada", itens_pauta=itens_pauta,
+            num_assembleia=num_assembleia)
 
 
 @permission_required(ConsensusTask.VOTAR_ITEM_PAUTA)
@@ -79,7 +64,7 @@ def votar_itempauta():
         itens_pauta_nao_votados_pelo_usuario = remover_itens_ja_votados(itens_pauta_sugeridos, current_user)
 
         return nenhum_itempauta_ou_listar_com_op_voto \
-            (u"Não há Itens de Pauta PENDENTES de voto por você", itens_pauta_nao_votados_pelo_usuario,
+            (msg=u"Não há Itens de Pauta PENDENTES de voto por você", itens_pauta=itens_pauta_nao_votados_pelo_usuario,
              template="itempauta/listar_itenspauta_em_votacao.html")
     else:
         voto_e_num_itempauta = request.form['link_op_voto']
@@ -114,8 +99,8 @@ def sugerir_itempauta():
     form.autor.data = current_user.id
     if form.validate_on_submit():
         op = OpcaoVoto.query.get(form.votacao.data)
-        desc_unicode = form.descricao.data.encode()
-        sugestao = SugestaoItemPauta(titulo=form.titulo.data, autor=form.autor.data, desc=desc_unicode)
+#        desc_unicode = form.descricao.data.encode()
+        sugestao = SugestaoItemPauta(titulo=form.titulo.data, autor=form.autor.data, desc=form.descricao.data)
         # se usuario selecionou 'outros' no combo 'opcoes de voto'
         if op.nome.__contains__("outras"):
             combo_votacao_outros = request.form.getlist('txt_outra_opcao')
@@ -131,7 +116,7 @@ def sugerir_itempauta():
 
         flash(u"Sugestão de Item de Pauta incluída com sucesso")
         return redirect(url_for('main.index'))
-    return render_template("itempauta/sugerir_itempauta.html", form = form)
+    return render_template("sugestao/sugerir_itempauta.html", form = form)
 
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
@@ -144,7 +129,7 @@ def listar_sugestoes_sem_avaliacao():
         return redirect(url_for('main.index'))
     opcoes_voto = get_op_voto_por_sugestao(sugestoes)
     ids = [(it.num) for it in sugestoes] # variavel utilizada na pag. "botoes_aprovar_reprovar.html"
-    return render_template("itempauta/listar_sugestoes_itempauta.html",
+    return render_template("sugestao/listar_sugestoes_itempauta.html",
                            itens_de_pauta = zip(sugestoes,ids), opcoes_voto=opcoes_voto)
 
 
@@ -154,8 +139,8 @@ def listar_sugestoes_sem_avaliacao():
 def listar_sugestoes_reprovadas():
     sugestoes_reprovadas = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'REPROVADA').all()
     return nenhum_itempauta_ou_listar_com_op_voto\
-        (u"Não há Sugestões de Item Pauta REPROVADAS", sugestoes_reprovadas,
-               "itempauta/listar_sugestoes_reprovadas.html")
+        (msg=u"Não há Sugestões de Item Pauta REPROVADAS", itens_pauta=sugestoes_reprovadas,
+               template="sugestao/listar_sugestoes_reprovadas.html")
 
 
 @permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
@@ -181,19 +166,6 @@ def reprovar_sugestao(num_itempauta):
     db.session.add(sugestao)
     db.session.commit()
     flash(u"Sugestão de Item Pauta REPROVADA com sucesso")
-    return redirect(url_for('main.index'))
-
-
-@permission_required(ConsensusTask.DESFAZER_REJEICAO)
-@login_required
-@main.route('/desfazer-reprovacao/<num_sugestao>', methods = ['POST'])
-def desfazer_reprovacao(num_sugestao):
-    sugestao_reprovada = SugestaoItemPauta.query.get(num_sugestao)
-    sugestao_reprovada.status = 'APROVADA'
-    # mantendo a justificativa_reprovada para historico
-    db.session.add(sugestao_reprovada)
-    db.session.commit
-    flash(u"Reprovação de Sugestão de Item Pauta DESFEITA com sucesso")
     return redirect(url_for('main.index'))
 
 
@@ -225,7 +197,7 @@ def atribuir_sugestoes_a_assembleia():
             flash(u"Não há Sugestões de Item Pauta APROVADAS para atribuir à assembléias")
             return redirect(url_for('main.index'))
 
-        return render_template("itempauta/atribuir_a_assembleia.html",
+        return render_template("sugestao/atribuir_a_assembleia.html",
                     sugestoes=sugestoes_aprovadas, assembleias_combo=assembleias,
                                assembleias_heading=assembleias, )
     else:
@@ -282,10 +254,13 @@ def listar_assembleias(status):
     assembleias_criadas = Assembleia.query.filter(Assembleia.status == 'CRIADA').order_by("dt_hora_criacao").all()
 
     if status == '1':
+# verifica se já tem alguma sugestao criada para cada assembleia CRIADA, para exibir o botao de detalhamento na tela
+        busca_sugestoes = len(SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'APROVADA').all()) > 0
         pag_destino = "CRIADAS"
         if assembleias_criadas:
             return render_template("assembleia/listar_assembleias_criadas.html",
-                                   assembleias=assembleias_criadas, agora=agora)
+                                   assembleias=assembleias_criadas, agora=agora,
+                                   ha_sugestoes_nao_atribuidas=busca_sugestoes)
     elif status == '2':
         for a in assembleias_criadas:
             datainicio = datetime.strptime(a.dataHoraInicio, '%d/%m/%Y %H:%M')

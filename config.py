@@ -4,6 +4,13 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+
+######################################## ATENÇÃO ##########################################
+
+# executar no MYSQL:
+# ALTER DATABASE consensus CHARACTER SET utf8 COLLATE utf8_general_ci;
+# para aceitar caracteres pt_br
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -11,6 +18,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     ADMIN_USER = os.environ.get('ADMIN_USER')
     ALLOWED_EXTENSIONS = set(['pdf', 'jpeg', 'bmp', 'jpg', 'png', 'gif', 'txt', 'doc', 'docx', 'xls', 'xlsx'])
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod
     def init_app(app):

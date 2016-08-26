@@ -1,0 +1,132 @@
+{% extends "index.html" %}
+
+{% block form_title %} Cadastrar Usuário {% endblock %}
+
+{% block form %}
+<form role="form" class="form-horizontal" method="POST" action="{{ url_for('auth.add_user') }}">
+
+    <div class="form-group">
+        {{ form.hidden_tag() }}
+        <label class="col-sm-2 control-label">{{ form.email.label }}</label>
+        <div class="col-sm-10" style="width: 30% !important">
+          {{ form.email(class="form-control", maxlength="50") }}
+            {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}<br>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{ form.nome.label }}</label>
+        <div class="col-sm-4" style="width: 30% !important">
+            {{ form.nome(class="form-control", maxlength="20") }}
+        {% for error in form.nome.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+        <label class="col-sm-2 control-label">{{ form.sobrenome.label }}</label>
+        <div class="col-sm-4" style="width: 30% !important">
+            {{ form.sobrenome(class="form-control", maxlength="20") }}
+        {% for error in form.sobrenome.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label"> Data de Nascimento: </label>
+        <div class="col-sm-10">
+            <div class='input-group date' id='data_nascimento' style="width: 34% !important">
+                <input type='text' class="form-control" id="dt_nascimento_text" name="dt_nascimento_text">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Gênero: </label>
+        <div class="col-sm-2">
+            <input type="radio" name="genero" id="opt_masculino" value="Masculino">
+            Masculino
+            <br>
+            <input type="radio" name="genero" id="opt_feminino" value="Feminino">
+            Feminino
+        </div>
+        <label class="col-sm-3 control-label">{{ form.num_ap.label }}</label>
+        <div class="col-sm-2" style="width: 10% !important">
+            {{ form.num_ap(class="form-control", maxlength="6") }}
+        {% for error in form.num_ap.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+        <label class="col-sm-1 control-label">{{ form.bloco.label }}</label>
+        <div class="col-sm-2" style="width: 10% !important">
+            {{ form.bloco(class="form-control", maxlength="3") }}
+        {% for error in form.bloco.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Role:</label>
+        <div class="col-sm-6" style="width: 40% !important">
+            <select id="roles" name="roles" class="form-control">
+            {% for r in roles %}
+                <option value="{{ r.id }}">{{ r.nome }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="popover-example col-sm-4 custom_popover" id="role_info" style="display:none">
+            <div class="popover-title"><h4>Privilégios:</h4></div>
+            <div class="popover-content" id="privilegios">
+
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{ form.senha.label }}</label>
+        <div class="col-sm-10" style="width: 20% !important">
+            {{ form.senha(class="form-control", maxlength="10") }}
+        {% for error in form.senha.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+
+        <div class="popover-example col-sm-4 custom_popover" id="pswd_info" style="display:none">
+            <div class="popover-title"><h4>A senha deve conter:</h4></div>
+            <div class="popover-content">
+                <li id='letter' class='invalid'> no mínimo <strong> uma letra </strong></li>
+                <li id='special_char' class='invalid'> no mínimo <strong> um carácter especial(@ # $ % ^ &) </strong></li>
+                <li id='number' class='invalid'> no mínimo <strong> um número </strong></li>
+                <li id='length' class='invalid'> no mínimo <strong> 8 caracteres</strong></li>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{ form.confirma_senha.label }}</label>
+        <div class="col-sm-10" style="width: 20% !important">
+            {{ form.confirma_senha(class="form-control", maxlength="10") }}
+        {% for error in form.confirma_senha.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        </div>
+    </div>
+
+    <div class="form-group" align="center">
+         <div class="col-sm-offset-2 col-sm-10">
+            {{ form.criar(class='btn btn-primary') }}
+        </div>
+    </div>
+</form>
+
+<script src="{{ url_for('static', filename='js/criar_usuario.js') }}"></script>
+{% endblock %}

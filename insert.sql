@@ -70,15 +70,25 @@ INSERT INTO `consensus`.`permissoes_roles`(`role_id`,`permissao_id`) VALUES(2,11
 INSERT INTO `consensus`.`permissoes_roles`(`role_id`,`permissao_id`) VALUES(2,12);
 INSERT INTO `consensus`.`permissoes_roles`(`role_id`,`permissao_id`) VALUES(2,14);
 
-INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`idade`,`genero`)
+INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`dt_nascimento`,`genero`)
 VALUES ('alves.bill@gmail.com','pbkdf2:sha1:1000$KYl6HeL0$9dfed60d4b31e7533f529a2b3da65c3002c69995',2,
-		'William','Alves','33','M'); -- senha baleia302
+		'William','Alves',DATE_FORMAT(MAKEDATE(1983,170), '%d/%m/%Y'),'M'); -- senha baleia302
 
-INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`idade`,`genero`)
+INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`dt_nascimento`,`genero`)
 VALUES ('bicuda@gmail.com','pbkdf2:sha1:1000$FMeVVA7l$fc308f7797fb05e714467075b6fb9ec06ff25f60',3,
-		'Estela','Bicuda','55','F');-- senha caracas
+		'Estela','Bicuda',DATE_FORMAT(MAKEDATE(1901,55), '%d/%m/%Y'),'F');-- senha caracas
 
-INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`idade`,`genero`)
-VALUES ('superman@gmail.com','pbkdf2:sha1:1000$MNTOcpCz$77954fd0c6161a52efba94b99c1a0aca63d7155b',2,
-		'Kal','El','255','M'); -- senha crypton
+INSERT INTO `consensus`.`usuarios`(`id`,`hash_senha`,`role_id`,`nome`,`sobrenome`,`dt_nascimento`,`genero`)
+VALUES ('superman@gmail.com','pbkdf2:sha1:1000$MNTOcpCz$77954fd0c6161a52efba94b99c1a0aca63d7155b',1,
+		'Kal','El',DATE_FORMAT(MAKEDATE(1735,301), '%d/%m/%Y'),'M'); -- senha crypton
+
+INSERT INTO `consensus`.`morador`(`num_ap`,`bloco`,`usuario_id`)
+VALUES (183,'C1','alves.bill@gmail.com');
+
+INSERT INTO `consensus`.`morador`(`num_ap`,`bloco`,`usuario_id`)
+VALUES (51,'B1','bicuda@gmail.com');
+
+INSERT INTO `consensus`.`morador`(`num_ap`,`bloco`,`usuario_id`)
+VALUES (273,'A1','alves.bill@gmail.com');
+
 

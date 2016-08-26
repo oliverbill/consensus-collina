@@ -29,5 +29,4 @@ def test():
 if __name__ == '__main__':
 #    print(app.root_path)
     os.environ.setdefault("CONSENSUS_UPLOAD_FOLDER", app.root_path+"/data/")
-#    print(os.environ.get('CONSENSUS_UPLOAD_FOLDER'))
     manager.run().run(debug=True)

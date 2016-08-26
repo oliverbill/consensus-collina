@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+
+{% from 'macros/exibir_sugestao_thumbnail.html' import list_sugestao %}
+
+{% block form_title %} Sugestões de Item Pauta {% endblock %}
+
+{% block form %}
+<div class="row" align="center">
+    <!-- var ids utilizada no botoes_aprovar_reprovar.html -->
+    {% for it,ids in itens_de_pauta %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption">
+              {{ list_sugestao(it, opcoes_voto) }}
+              {% include '/botoes_aprovar_reprovar.html' %}
+              <br>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+</div>
+
+{% set modal_title = "Aprovação de Sugestão de Item Pauta" %}
+
+{% set modal_msg = "Deseja confirmar a aprovação da Sugestão de Item Pauta ?" %}
+
+{% include '/modal.html' %}
+
+{% endblock %}

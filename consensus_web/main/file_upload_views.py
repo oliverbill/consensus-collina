@@ -28,8 +28,13 @@ def upload():
             if not allowed_file(file.filename):
                 result = uploadfile(name=filename, type=mimetype, size=0, not_allowed_msg="Extensão de arquivo não permitida")
             else:
-                # save file to disk
-                uploaded_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                # salva o arquivo no S.O. Se não existir, cria o diretorio
+                pasta = current_app.config['UPLOAD_FOLDER']
+                uploaded_file_path = os.path.join(pasta, filename)
+
+                if not os.path.exists(pasta):
+                    os.makedirs(pasta, exist_ok=True) # cria diretorio. Se existir, sobrescreve sem lancar excecao
+
                 file.save(uploaded_file_path)
 
                 # create thumbnail after saving

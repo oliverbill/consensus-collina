@@ -5,6 +5,7 @@ drop table permissoes;
 drop table anexos_temp;
 drop table anexos;
 drop table votos;
+drop table comentarios;
 drop table itemspautas;
 drop table sugestoes_itempauta;
 drop table usuarios;

@@ -22,5 +22,23 @@ jQuery(document).ready(function() {
       $('[data-toggle="popover"]').popover()
     })
 
+
+
+    setInterval(function(){
+        if( $('#count_char').is(":visible") ){
+            var max = $('#descricao').attr("maxlength");
+            var len = $('#descricao').val().length;
+            var char = max - len;
+
+            if (len >= max) {
+                $('#count_char').text('Você atingiu o número máximo de carácteres.');
+            }else if ( (max - len) == 1) {
+                $('#count_char').text('carácteres restantes: ' + char);
+            }else{
+                $('#count_char').text('carácteres restantes: ' + char);
+            }
+        }
+    }, 500);
+
 });
 

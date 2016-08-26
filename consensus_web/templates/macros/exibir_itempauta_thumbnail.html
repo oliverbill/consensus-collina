@@ -1,33 +1,61 @@
 {% macro list_itempauta(it, opcoes_voto) %}
 
-    {% if it.titulo %}
-     <p>
-       <h3>{{ it.titulo }}</h3>
-     </p>
+    {% if it.get_obj_sugestao.titulo %}
+         <p>
+           <h3>{{ it.get_obj_sugestao.titulo }}</h3>
+         </p>
     {% endif %}
 
-    {% if it.descricao %}
-    <pre>{{ it.descricao }}</pre>
+    {% if it.get_obj_sugestao.descricao %}
+        <hr>
+        <longdesc>{{ it.get_obj_sugestao.descricao }}</longdesc>
+        <hr>
     {% endif %}
 
-    {% if it.autor %}
+    {% if it.get_obj_sugestao.autor %}
         <p>
-            {{ it.autor }}
+            {{ it.get_obj_sugestao.autor }}
         </p>
     {% endif %}
 
     {% if opcoes_voto %}
-    <p>
-      {% for op in opcoes_voto.get(it.num) %}
-        <strong>{{ op }} | </strong>
-      {% endfor %}
-    </p>
+        <hr>
+        <p>
+            <div class="btn-group" data-toggle="buttons">
+              {% for op in opcoes_voto.get(it.num) %}
+                  <label class="btn btn-default">
+                    <input type="radio" name="link_op_voto" id="link_op_voto{{it.num}}"
+                           autocomplete="off" value="{{op}} ; {{it.num}}">
+                     <strong>{{ op }}</strong>
+                  </label>
+               {% endfor %}
+            </div>
+        </p>
     {% endif %}
 
-    {% for a in it.anexos %}
+    <hr>
+
+    <h4 align="center"><strong>Comentários</strong></h4>
+
+    {% for c in it.comentarios %}
+        <p>
+            <pre class="form-control">{{ c.texto }}</pre>
+        </p>
+    {% endfor %}
+
+    <hr>
+
     <p>
-        <a href="{{ a.url_download }}">{{a.nome}}</a>
+        <h4 align="center"><strong>Seu Comentário</strong></h4>
+        <textarea name="comentario" class="form-control" style="height: 60px !important;"></textarea>
     </p>
+
+    {% for a in it.get_obj_sugestao.anexos %}
+        <hr>
+        <h4 align="center"><strong>Anexos</strong></h4>
+        <p>
+            <a href="{{ a.url_download }}">{{a.nome}}</a>
+        </p>
     {% endfor %}
 
 {% endmacro %}

@@ -14,7 +14,7 @@ class LoginForm(Form):
     password = PasswordField('Senha', validators=[DataRequired(message="por favor, informe sua senha")],
                             render_kw = {"placeholder": "senha", "class" : "form-password form-control", "size" : "10" })
 
-    remember_me = BooleanField(u'Lembre me')
+    remember_me = BooleanField(u'Lembre-me')
 
     submit = SubmitField(u'Entrar', render_kw = {"class" : "btn btn-default"})
 

@@ -1,7 +1,8 @@
 from enum import Enum
 
-from flask_login import UserMixin, current_app, AnonymousUserMixin
+from flask_login import UserMixin, current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.dialects.mysql.base import LONGTEXT
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -148,7 +149,7 @@ class SugestaoItemPauta(db.Model):
 
     __num = db.Column(db.BigInteger,primary_key=True, autoincrement=True, name="num")
     titulo = db.Column(db.String(100), nullable=False)
-    descricao = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(LONGTEXT, nullable=False)
     status = db.Column(db.String(70), server_default='NAO_AVALIADA')
     justif_reprovacao = db.Column(db.String(255))
 
@@ -221,6 +222,19 @@ class AnexoTemp(db.Model):
         self.url_download = url
         self.usuario = usuario
 
+class Morador(db.Model):
+    __num = db.Column(db.BigInteger, name="num", autoincrement=True, primary_key=True)
+    num_ap = db.Column(db.Integer, default=False)
+    bloco = db.Column(db.String(3), nullable=False)
+
+    usuario_id = db.Column(db.String(50), db.ForeignKey('usuarios.id'), name="usuario_id", nullable=False)
+
+    def __init__(self, num_ap, bloco, user_id):
+        super(Morador, self).__init__()
+        self.num_ap = num_ap
+        self.bloco = bloco
+        self.usuario_id = user_id
+
 
 class User(db.Model,UserMixin):
     __tablename__ = 'usuarios'
@@ -229,26 +243,26 @@ class User(db.Model,UserMixin):
 
     nome =  db.Column(db.String(20), nullable=False)
     sobrenome = db.Column(db.String(20), nullable=False)
-    idade = db.Column(db.String(3), nullable=False)
+    dataNascimento = db.Column(db.String(10), nullable=False, name="dt_nascimento")
     genero = db.Column(db.String(1), nullable=False)
-
     hash_senha = db.Column(db.String(128), nullable=False)
     confirmado = db.Column(db.Boolean, default=False)
 
     __role = db.Column(db.Integer, db.ForeignKey('roles.id'), name="role_id", nullable=False)
 
-    def __init__(self, email, password, nome, sobrenome, idade, genero, role=None):
+    morador = db.relationship("Morador", backref="usuarios", cascade="all, delete-orphan")
+
+    def __init__(self, email, password, nome, sobrenome, dataNascimento, genero, num, bloco, role):
         super(User, self).__init__()
         self.__id = email
         self.nome = nome
         self.sobrenome = sobrenome
-        self.idade = idade
+        self.dataNascimento = dataNascimento
         self.genero = genero
         self.__role = role
-        if self.__role is None:
-            if self.__id == current_app.config['ADMIN_USER']:
-                self.__role = Role.query.filter_by(_permissoes=ConsensusTask.ADMINISTRAR_SISTEMA).first()
         self.hash_senha = generate_password_hash(password)
+        self.num_ap = num
+        self.bloco = bloco
 
     @property
     def role(self):
@@ -258,12 +272,11 @@ class User(db.Model,UserMixin):
     def id(self):
         return self.__id
 
-    def pode(self, permissions):
-        return self.__role is not None and \
-               (self.__role._permissoes & permissions) == permissions
+    def pode(self, task):
+        return self.__role is not None and task in self.__role.permissoes_da_role
 
     def is_administrador(self):
-        return self.can(Permissao.ADMINISTRAR_SISTEMA)
+        return self.pode(ConsensusTask.ADMINISTRAR_SISTEMA)
 
     def is_senha_correta(self, password):
         return check_password_hash(self.hash_senha, password)
@@ -307,6 +320,14 @@ class Role(db.Model):
         super(Role, self).__init__()
         self.nome = nome
 
+    def __repr__(self):
+        return "[Id: "+self.__id+",Nome: "+self.nome+"Permissões: "\
+               +self.permissoes_da_role+",Usuários: "+self.usuarios
+
+    @property
+    def id(self):
+        return self.__id
+
 
 class ConsensusTask(Enum):
     ADMINISTRAR_SISTEMA = 'ADMINISTRAR_SISTEMA'
@@ -348,10 +369,6 @@ class Permissao(db.Model):
         super(Permissao, self).__init__()
         self.nome = nome
 
-
-class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
-        return False
-
-    def is_administrator(self):
-        return False
+    def __repr__(self):
+        return "[Id: " + self.__id + ",Nome: " + self.nome + "Roles: " \
+           + self.roles_da_permissao

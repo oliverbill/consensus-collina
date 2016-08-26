@@ -1,79 +1,32 @@
 {% extends "index.html" %}
 
-    {% block form_title %} Itens de Pauta Em Votação {% endblock %}
+{% from 'macros/exibir_itempauta_thumbnail.html' import list_itempauta %}
 
-    {% block form %}
-    <form action="{{ url_for('main.votar_itempauta') }}" method="POST">
-        <div class="table-responsive" align="center">
-            <table class="table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-center">Título</th>
-                        <th class="text-center">Descrição</th>
-                        <th class="text-center">Autor</th>
-                        <th class="text-center">Num Assembléia</th>
-                        <th class="text-center">Opções de Voto</th>
-                        <th class="text-center">Anexos</th>
-                    </tr>
-                </thead>
+{% block form_title %} Itens de Pauta Em Votação {% endblock %}
 
-                <tbody>
-                    {% for it in itens_de_pauta %}
-                    <tr class="text-center">
-                        <td class="text-center">{{ it.get_obj_sugestao.titulo }}</td>
-                        <td class="text-center">{{ it.get_obj_sugestao.descricao }}</td>
-                        <td class="text-center">{{ it.get_obj_sugestao.autor }}</td>
-                        <td class="text-center">{{ it.assembleia }}</td>
-                        <td class="text-center">
-                            {% if opcoes_voto %}
-                            <p>
-                                <div class="btn-group" data-toggle="buttons">
-                                  {% for op in opcoes_voto.get(it.num) %}
-                                      <label class="btn btn-primary">
-                                        <input type="radio" name="link_op_voto" id="link_op_voto{{it.num}}"
-                                               autocomplete="off" value="{{op}} ; {{it.num}}">
-                                         <strong>{{ op }}</strong>
-                                      </label>
-                                   {% endfor %}
-                                </div>
-                            </p>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% for a in it.get_obj_sugestao.anexos %}
-                            <p>
-                                <a href="{{ a.url_download }}">{{a.nome}}</a>
-                            </p>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    {% if it.comentarios %}
-                    <tr>
-                        <td colspan="7">
-                            <h4 align="center"><strong>Comentários</strong></h4>
-                        </td>
-                    </tr>
-                    {% endif %}
-                    {% for c in it.comentarios %}
-                    <tr>
-                        <td colspan="7">
-                            <pre class="form-control">{{ c.texto }}</pre>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="7">
-                            <h4 align="center"><strong>Seu Comentário</strong></h4>
-                            <textarea name="comentario" class="form-control" style="height: 60px !important;"></textarea>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <div align="center">
-                <input type="submit" class="btn btn-primary" id="votar" value="Confirmar">
+{% block form %}
+<form action="{{ url_for('main.votar_itempauta') }}" method="POST">
+    <div class="row" align="center">
+        {% for it in itens_de_pauta %}
+          <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <div class="caption">
+
+                  {{ list_itempauta(it, opcoes_voto) }}
+                  <br>
+
+              </div>
             </div>
-        </div>
-    </form>
-    {% endblock %}
+          </div>
+        {% endfor %}
+    </div>
+
+    <div align="center">
+        <input type="submit" class="btn btn-primary" id="votar" value="Confirmar">
+    </div>
+</form>
+
+<!-- pinta cada option de uma cor  -->
+<!--<script src="{{ url_for('static', filename='js/style-opcoes-votacao.js') }}"></script> -->
+
+{% endblock %}
