@@ -252,7 +252,7 @@ class User(db.Model,UserMixin):
 
     morador = db.relationship("Morador", backref="usuarios", cascade="all, delete-orphan")
 
-    def __init__(self, email, password, nome, sobrenome, dataNascimento, genero, num, bloco, role):
+    def __init__(self, email, password, nome, sobrenome, dataNascimento, genero, role, num=None, bloco=None):
         super(User, self).__init__()
         self.__id = email
         self.nome = nome
@@ -261,16 +261,34 @@ class User(db.Model,UserMixin):
         self.genero = genero
         self.__role = role
         self.hash_senha = generate_password_hash(password)
-        self.num_ap = num
-        self.bloco = bloco
+        if num and bloco:
+            self.morador = Morador(num_ap=num,bloco=bloco,user_id=self.__id)
 
     @property
     def role(self):
         return self.__role
 
     @property
+    def role_nome(self):
+        return Role.query.get(self.__role).nome
+
+    @property
     def id(self):
         return self.__id
+
+    def alterar(self,email,nome,sobrenome,dt_nascimento,genero,num_ap,bloco,role):
+        if self.__id != email: self.__id = email
+        if self.nome != nome: self.nome = nome
+        if self.sobrenome != sobrenome: self.sobrenome = sobrenome
+        if self.dataNascimento != dt_nascimento: self.dataNascimento = dt_nascimento
+        if self.genero != genero: self.genero = genero
+        if self.role != role: self.__role = role
+
+        if self.morador.num_ap != num_ap: self.morador.num_ap = num_ap
+        if self.morador.bloco != bloco: self.morador.bloco = bloco
+
+        db.session.add(self)
+        db.session.commit()
 
     def pode(self, task):
         return self.__role is not None and task in self.__role.permissoes_da_role
@@ -284,6 +302,21 @@ class User(db.Model,UserMixin):
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(user_id)
+
+    @property
+    def is_morador(self):
+        eh_morador = Morador.query.filter(Morador.usuario_id == self.__id).all()
+        if eh_morador is None:
+            return "Não"
+        else:
+            return "Sim"
+
+    @property
+    def is_confirmado(self):
+        if not self.confirmado:
+            return "Não"
+        else:
+            return "Sim"
 
     def gerar_token_confirmacao(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)

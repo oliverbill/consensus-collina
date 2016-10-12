@@ -6,29 +6,6 @@
 
 {% block form %}
 <form action="{{ url_for('main.atribuir_sugestoes_a_assembleia') }}" method="POST">
-
-    <!--<div class="input-group">
-        <div class="col-lg-6">
-            <select id="sugestoes" name="sugestoes" class="form-control">
-              {% for sug in sugestoes %}
-                 <option value="{{ sug.num }}">{{ sug.titulo }}</option>
-              {% endfor %}
-            </select>
-        </div>
-        <div class="col-lg-4">
-            <select id="assembleias_combo" name="assembleias_combo" class="form-control">
-              {% for a in assembleias_combo %}
-                 <option value="{{ a.num }}">{{ a.num }}</option>
-              {% endfor %}
-            </select>
-        </div>
-        <div class="col-lg-2">
-            <span class="input-group-btn">
-                <button class="btn btn-default" id="btn_add_itempauta" type="button">Adicionar</button>
-            </span>
-        </div>
-     </div>-->
-
     <div class="table-responsive">
         <table class="table">
             <thead>

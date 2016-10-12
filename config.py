@@ -39,7 +39,7 @@ class TestingConfig(Config):
     TESTING = True
     LOGIN_DISABLED = True
     SERVER_NAME = "localhost:5000"
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, '/tests/data-test.sqlite')
     WTF_CSRF_ENABLED = False
 
 

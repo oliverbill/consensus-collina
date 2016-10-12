@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/consensus_web" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.5.1 virtualenv at D:\python-workspace\consensus-backend\consensus-des" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">

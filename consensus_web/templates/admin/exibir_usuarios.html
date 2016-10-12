@@ -4,5 +4,40 @@
 
 {% block form %}
 
+    <table class="table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">Login</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Data de Nascimento</th>
+                    <th class="text-center">Gênero</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Morador ?</th>
+                    <th class="text-center">Confirmado ?</th>
+                    <th class="text-center">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+                <tr class="text-center">
+                    <td class="text-center">{{ u.id }}</td>
+                    <td class="text-center">{{ u.nome }} {{ u.sobrenome }}</td>
+                    <td class="text-center">{{ u.dataNascimento }}</td>
+                    <td class="text-center">{{ u.genero }}</td>
+                    <td class="text-center">{{ u.role_nome }}</td>
+                    <td class="text-center">{{ u.is_morador }}</td>
+                    <td class="text-center">{{ u.is_confirmado }}</td>
+
+                    <td class="text-center">
+                      <a href="{{ url_for('auth.edit_user',user_email=u.id) }}" id="btn_editar_usuario" >
+                        <img border="0" alt="Editar Usuario" src="{{ url_for('static', filename='img/user-edit.png')}}">
+                      </a>
+                      <a href="{{ url_for('auth.excluir_user',user_email=u.id) }}" id="btn_excluir_usuario" >
+                        <img border="0" alt="Excluir Usuario" src="{{ url_for('static', filename='img/user-delete.png')}}">
+                      </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
 
 {% endblock %}

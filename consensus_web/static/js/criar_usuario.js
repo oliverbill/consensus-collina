@@ -1,5 +1,7 @@
 jQuery(document).ready(function() {
 
+    $("#criar").prop("disabled",true);
+
     $('#data_nascimento').datetimepicker({
         useCurrent: false,
         viewMode: 'years',
@@ -28,6 +30,20 @@ jQuery(document).ready(function() {
         });
     });
 
+    var isSenhaConfirmada = false;
+    var isSenhaValidada = false;
+
+   $('#confirma_senha').blur(function() {
+        if ($(this).val() == $('#senha').val()){
+            isSenhaConfirmada = true;
+        }
+
+        if (isSenhaValidada && isSenhaConfirmada)
+        {
+            $("#criar").prop("disabled",false);
+        }
+    });
+
 /* validacao de senha */
 
     $('#senha').keyup(function() {
@@ -43,16 +59,23 @@ jQuery(document).ready(function() {
         // set password variable
         var pswd = txtSenha.val();
 
+        var isLengthValidated = false;
+        var isLetterValidated = false;
+        var isSpecialCharValidated = false;
+        var isNumberValidated = false;
+
         //validate the length
         if ( pswd.length < 8 | pswd.length > 10) {
             $('#length').removeClass('valid').addClass('invalid');
         } else {
             $('#length').removeClass('invalid').addClass('valid');
+            isLengthValidated = true;
         }
 
         //validate letter
         if ( pswd.match(/[A-z]/) ) {
             $('#letter').removeClass('invalid').addClass('valid');
+            isLetterValidated = true;
         } else {
             $('#letter').removeClass('valid').addClass('invalid');
         }
@@ -60,6 +83,7 @@ jQuery(document).ready(function() {
         //validate caracteres especiais
         if ( pswd.match(/[@#$%^&+=]/) ) {
             $('#special_char').removeClass('invalid').addClass('valid');
+            isSpecialCharValidated = true;
         } else {
             $('#special_char').removeClass('valid').addClass('invalid');
         }
@@ -67,8 +91,14 @@ jQuery(document).ready(function() {
         //validate number
         if ( pswd.match(/\d/) ) {
             $('#number').removeClass('invalid').addClass('valid');
+            isNumberValidated = true;
         } else {
             $('#number').removeClass('valid').addClass('invalid');
+        }
+
+        if(isLengthValidated && isLetterValidated && isSpecialCharValidated && isNumberValidated)
+        {
+            isSenhaValidada = true;
         }
     }
 

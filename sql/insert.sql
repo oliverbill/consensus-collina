@@ -43,10 +43,10 @@ INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('ATRIBUIR_ASSEMBLEIA');
 INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('DESFAZER_REJEICAO');
 INSERT INTO `consensus`.`permissoes`(`nome`) VALUES('LISTAR_ITEM_PAUTA');
 
-INSERT INTO `consensus`.`roles`(`nome`) VALUES('ADMINISTRADORES DO SISTEMA');
+INSERT INTO `consensus`.`roles`(`nome`) VALUES('ADMIN DO SISTEMA');
 INSERT INTO `consensus`.`roles`(`nome`) VALUES('MORADORES');
 INSERT INTO `consensus`.`roles`(`nome`) VALUES('SINDICOS');
-INSERT INTO `consensus`.`roles`(`nome`) VALUES('ADMINISTRADORES DO CONDOMINIO');
+INSERT INTO `consensus`.`roles`(`nome`) VALUES('ADMIN DO CONDOMINIO');
 
 INSERT INTO `consensus`.`permissoes_roles`(`role_id`,`permissao_id`) VALUES(1,1);
 INSERT INTO `consensus`.`permissoes_roles`(`role_id`,`permissao_id`) VALUES(2,2);
