@@ -1,0 +1,3 @@
+[setuptools.file_finders]
+svn_cvs = setuptools_svn:find_files
+
