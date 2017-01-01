@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 ######################################## ATENÇÃO ##########################################
 
 # executar no MYSQL:
-# ALTER DATABASE consensus CHARACTER SET utf8 COLLATE utf8_general_ci;
+# ALTER DATABASE consensus-collina CHARACTER SET utf8 COLLATE utf8_general_ci;
 # para aceitar caracteres pt_br
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -32,7 +32,7 @@ class DevelopmentConfig(Config):
     THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
     MAX_FILE_SIZE = 500000000  # 5 MB
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus-collina'
 
 
 class TestingConfig(Config):
@@ -49,9 +49,9 @@ class ProductionConfig(Config):
     app = Flask(__name__)
     db = SQLAlchemy(app)
     if SERVER_NAME:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@' + SERVER_NAME + '/consensus'
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@' + SERVER_NAME + '/consensus-collina'
     else:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus-collina'
 
 config_map = {
     'dev': DevelopmentConfig,
