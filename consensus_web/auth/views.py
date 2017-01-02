@@ -1,5 +1,5 @@
-from flask import request, redirect, render_template, url_for, flash
-from flask_login import login_required, session, login_user,logout_user
+from flask import request, redirect, render_template, url_for, flash, session
+from flask_login import login_required, login_user,logout_user
 from werkzeug.security import generate_password_hash
 
 from consensus_web import db

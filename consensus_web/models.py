@@ -1,6 +1,7 @@
 from enum import Enum
 
-from flask_login import UserMixin, current_app
+from flask import current_app
+from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.dialects.mysql.base import LONGTEXT
 from sqlalchemy.orm import relationship
