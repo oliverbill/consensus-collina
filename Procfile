@@ -1,1 +1,1 @@
-web: gunicorn consensus-collina.wsgi --log-file -
+web: gunicorn consensus.wsgi --log-file -
