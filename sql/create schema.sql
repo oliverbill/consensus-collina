@@ -1,0 +1,3 @@
+CREATE SCHEMA `consensus` DEFAULT CHARACTER SET utf8 ;
+
+ALTER DATABASE consensus CHARACTER SET utf8 COLLATE utf8_general_ci;
