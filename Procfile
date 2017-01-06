@@ -1,1 +1,1 @@
-web: gunicorn consensus.wsgi --log-file -
+web: gunicorn wsgi:app

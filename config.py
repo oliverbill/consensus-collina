@@ -18,7 +18,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     ADMIN_USER = os.environ.get('ADMIN_USER')
     ALLOWED_EXTENSIONS = set(['pdf', 'jpeg', 'bmp', 'jpg', 'png', 'gif', 'txt', 'doc', 'docx', 'xls', 'xlsx'])
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     @staticmethod
     def init_app(app):
@@ -32,7 +32,7 @@ class DevelopmentConfig(Config):
     THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
     MAX_FILE_SIZE = 500000000  # 5 MB
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus-collina'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
 
 
 class TestingConfig(Config):
@@ -49,9 +49,9 @@ class ProductionConfig(Config):
     app = Flask(__name__)
     db = SQLAlchemy(app)
     if SERVER_NAME:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@' + SERVER_NAME + '/consensus-collina'
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@' + SERVER_NAME + '/consensus'
     else:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus-collina'
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
 
 config_map = {
     'dev': DevelopmentConfig,
