@@ -45,13 +45,9 @@ class TestingConfig(Config):
 
 # DEFINIR VARIAVEL DE AMBIENTE $HOST
 class ProductionConfig(Config):
-    SERVER_NAME = os.environ.get('HOST')
     app = Flask(__name__)
     db = SQLAlchemy(app)
-    if SERVER_NAME:
-        SQLALCHEMY_DATABASE_URI = SERVER_NAME = os.environ.get('DATABASE_URL') # var de amb criada auto pelo Heroku
-    else:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') # var de amb criada auto pelo Heroku
 
 config_map = {
     'dev': DevelopmentConfig,
