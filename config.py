@@ -49,7 +49,7 @@ class ProductionConfig(Config):
     app = Flask(__name__)
     db = SQLAlchemy(app)
     if SERVER_NAME:
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@' + SERVER_NAME + '/consensus'
+        SQLALCHEMY_DATABASE_URI = SERVER_NAME = os.environ.get('DATABASE_URL') # var de amb criada auto pelo Heroku
     else:
         SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
 
