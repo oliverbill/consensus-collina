@@ -1,7 +1,7 @@
 import os
-from consensus_web import create_app
+import consensus_web as modulo
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = modulo.create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 if __name__ == "__main__":
     app.run()
