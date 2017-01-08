@@ -4,7 +4,6 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-
 ######################################## ATENÇÃO ##########################################
 
 # executar no MYSQL:
@@ -33,7 +32,6 @@ class DevelopmentConfig(Config):
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
     MAX_FILE_SIZE = 500000000  # 5 MB
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
-
 
 class TestingConfig(Config):
     TESTING = True
