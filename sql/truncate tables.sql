@@ -1,12 +1,10 @@
-use consensus;
-
-truncate permissoes_roles;
-truncate permissoes;
-truncate anexos;
-truncate votos;
-truncate itemspautas;
-truncate sugestoes_itempauta;
-truncate usuarios;
-truncate roles;
-truncate opcoes_voto;
-truncate assembleias;
+﻿truncate permissoes_roles CASCADE;
+truncate permissoes CASCADE;
+truncate anexos CASCADE;
+truncate votos CASCADE;
+truncate itemspautas CASCADE;
+truncate sugestoes_itempauta CASCADE;
+truncate usuarios CASCADE;
+truncate roles CASCADE;
+truncate opcoes_voto CASCADE;
+truncate assembleias CASCADE;
