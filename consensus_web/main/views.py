@@ -16,6 +16,7 @@ from ..models import ItemPauta, ConsensusTask, Assembleia, OpcaoVoto, Voto, Stat
 
 
 @main.route('/', methods = ['GET','POST'])
+@login_required
 def index():
     return render_template("index.html")
 
