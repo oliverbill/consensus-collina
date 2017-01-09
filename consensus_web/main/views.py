@@ -1,4 +1,4 @@
-# encoding: utf-8
+## encoding: utf-8
 
 from datetime import datetime
 
@@ -27,7 +27,6 @@ def index():
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-itenspauta/<status>', methods = ['GET'])
-@login_required
 def listar_itens_de_pauta_status(status):
     if status not in StatusItemPauta.__members__:
         flash(u"Status inexistente: " + status)
@@ -41,7 +40,6 @@ def listar_itens_de_pauta_status(status):
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-itenspauta/<num_assembleia>/', methods = ['GET'])
-@login_required
 def listar_itens_de_pauta_da_assembleia(num_assembleia):
     itens_pauta = ItemPauta.query\
         .filter(ItemPauta.assembleia == num_assembleia).all()
@@ -53,7 +51,6 @@ def listar_itens_de_pauta_da_assembleia(num_assembleia):
 
 @permission_required(ConsensusTask.VOTAR_ITEM_PAUTA)
 @main.route('/votar-item-pauta/', methods = ['GET','POST'])
-@login_required
 def votar_itempauta():
     if request.method == 'GET':
         itens_pauta_sugeridos = ItemPauta.query.filter(ItemPauta.status == 'EM_VOTACAO').all()
@@ -93,7 +90,6 @@ def votar_itempauta():
 @permission_required(ConsensusTask.SUGERIR_ITEM_PAUTA)
 ## tem q permitir GET por causa do possivel refresh do usuario (post/redirect/get pattern)
 @main.route('/sugerir-item-pauta/', methods = ['GET','POST'])
-@login_required
 def sugerir_itempauta():
     form = SugerirItemPautaForm(request.form)
     form.autor.data = current_user.id
@@ -121,7 +117,6 @@ def sugerir_itempauta():
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-sugestoes-sem-avaliacao/', methods = ['GET','POST'])
-@login_required
 def listar_sugestoes_sem_avaliacao():
     sugestoes = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'NAO_AVALIADA').all()
     if not sugestoes:
@@ -135,7 +130,6 @@ def listar_sugestoes_sem_avaliacao():
 
 @permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-sugestoes-reprovadas/', methods = ['GET'])
-@login_required
 def listar_sugestoes_reprovadas():
     sugestoes_reprovadas = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'REPROVADA').all()
     return nenhum_itempauta_ou_listar_com_op_voto\
@@ -145,7 +139,6 @@ def listar_sugestoes_reprovadas():
 
 @permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 @main.route('/aprovar-sugestao/<num_sugestao>/', methods = ['POST'])
-@login_required
 def aprovar_sugestao(num_sugestao):
     sugestao = SugestaoItemPauta.query.get(num_sugestao)
     sugestao.status = 'APROVADA'
@@ -156,7 +149,6 @@ def aprovar_sugestao(num_sugestao):
 
 
 @permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
-@login_required
 @main.route('/reprovar-sugestao/<num_itempauta>', methods = ['POST'])
 def reprovar_sugestao(num_itempauta):
     justificativa = request.form["justificativa"]
@@ -171,7 +163,6 @@ def reprovar_sugestao(num_itempauta):
 
 @permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 @main.route('/add-itempauta-a-assembleia/', methods = ['POST'])
-@login_required
 def add_itempauta_a_assembleia():
     try:
         num_sugestao = request.form["sugestao_num"]
@@ -185,7 +176,6 @@ def add_itempauta_a_assembleia():
 
 @permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 @main.route('/atribuir-a-assembleia/', methods = ['GET','POST'])
-@login_required
 def atribuir_sugestoes_a_assembleia():
     if request.method == 'GET':
         assembleias = Assembleia.query.filter_by(status='CRIADA').order_by("num").all()
@@ -229,7 +219,6 @@ def atribuir_sugestoes_a_assembleia():
 
 @permission_required(ConsensusTask.CRIAR_ASSEMBLEIA)
 @main.route('/criar-assembleia/', methods = ['GET','POST'])
-@login_required
 def criar_assembleia():
     if request.method == 'GET':
         return render_template("assembleia/criar_assembleia.html")
@@ -245,7 +234,6 @@ def criar_assembleia():
 @permission_required(ConsensusTask.LISTAR_ASSEMBLEIAS)
 ## tem q permitir GET por causa do possivel refresh do usuario (post/redirect/get pattern)
 @main.route('/listar-assembleias/<status>/', methods = ['GET','POST'])
-@login_required
 def listar_assembleias(status):
     pag_destino = ""
     agora = datetime.now();
