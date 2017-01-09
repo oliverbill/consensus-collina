@@ -31,7 +31,7 @@ class DevelopmentConfig(Config):
     THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
     MAX_FILE_SIZE = 500000000  # 5 MB
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/consensus'
+    SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost/consensus'
 
 class TestingConfig(Config):
     TESTING = True

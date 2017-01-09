@@ -3,7 +3,7 @@ from enum import Enum
 from flask import current_app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy.dialects.postgresql.base import TEXT
+from sqlalchemy.dialects.mysql.base import LONGTEXT
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -150,7 +150,7 @@ class SugestaoItemPauta(db.Model):
 
     __num = db.Column(db.BigInteger,primary_key=True, autoincrement=True, name="num")
     titulo = db.Column(db.String(100), nullable=False)
-    descricao = db.Column(TEXT, nullable=False)
+    descricao = db.Column(LONGTEXT, nullable=False)
     status = db.Column(db.String(70), server_default='NAO_AVALIADA')
     justif_reprovacao = db.Column(db.String(255))
 
