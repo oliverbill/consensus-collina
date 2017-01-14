@@ -17,6 +17,7 @@
                 {% endif %}
 
                 <p align="center">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <button type="button" class="btn btn-danger" id="desfazer"
                         data-id="{{ it.num }}"  data-target="#modal" data-toggle="modal" >
                         Desfazer
@@ -32,7 +33,7 @@
 
 {% set modal_title = "Aprovação de Sugestão de Item Pauta" %}
 
-{% set modal_msg = "Deseja confirmar a aprovação da Sugestão de Item Pauta ?" %}
+{% set modal_msg = "Deseja desfazer a reprovação da Sugestão de Item Pauta ?" %}
 
 {% include '/modal.html' %}
 

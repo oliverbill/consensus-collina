@@ -220,7 +220,7 @@ def atribuir_sugestoes_a_assembleia():
             a = Assembleia.query.get(n)
             iniciar_assembleia(a) #verifica se a assembleia pode ser iniciada
 
-        flash(u"Assembléias atribuídas com sucesso")
+        flash(u"Itens de Pauta atribuídos com sucesso")
         return "/"  # retorna a url em texto pq o sistema redireciona via javascript apos o confirm do modal
 
 ############################################

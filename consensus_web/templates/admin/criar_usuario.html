@@ -6,7 +6,7 @@
 <form role="form" class="form-horizontal" method="POST" action="{{ url_for('auth.add_user') }}">
 
     <div class="form-group">
-        {{ form.hidden_tag() }}
+        {{ form.csrf_token() }}
         <label class="col-sm-1 control-label">{{ form.email.label }}</label>
         <div class="col-sm-10" style="width: 30% !important">
           {{ form.email(class="form-control", maxlength="50") }}
@@ -50,22 +50,21 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Gênero: </label>
         <div class="col-sm-2">
-            <input type="radio" name="genero" id="opt_masculino" value="Masculino">
-            Masculino
-            <br>
-            <input type="radio" name="genero" id="opt_feminino" value="Feminino">
-            Feminino
+            <select id="genero" name="genero" class="form-control">
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+            </select>
         </div>
         <label class="col-sm-3 control-label">{{ form.num_ap.label }}</label>
         <div class="col-sm-2" style="width: 10% !important">
-            {{ form.num_ap(class="form-control", maxlength="6") }}
+            {{ form.num_ap(class="form-control", maxlength="4") }}
         {% for error in form.num_ap.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
         </div>
         <label class="col-sm-1 control-label">{{ form.bloco.label }}</label>
         <div class="col-sm-2" style="width: 10% !important">
-            {{ form.bloco(class="form-control", maxlength="3") }}
+            {{ form.bloco(class="form-control", maxlength="2") }}
         {% for error in form.bloco.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
@@ -76,6 +75,7 @@
         <label class="col-sm-2 control-label">Role:</label>
         <div class="col-sm-6" style="width: 40% !important">
             <select id="roles" name="roles" class="form-control">
+                <option value="" selected="selected"></option>
             {% for r in roles %}
                 <option value="{{ r.id }}">{{ r.nome }}</option>
             {% endfor %}

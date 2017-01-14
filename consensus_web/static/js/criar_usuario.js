@@ -8,24 +8,28 @@ jQuery(document).ready(function() {
         format: 'DD/MM/YYYY'
     });
 
-
     $('#roles').change(function() {
         $.ajax({
-            type: 'post',
-            data: 'role_id=' + $(this).val(),
+            type: 'POST',
+            //data: JSON.stringify({ "role_id" : $(this).val()}),
+            data: "role_id=" + $(this).val(),
             url: '/get-permissoes/',
             async: false, // para poder retornar o resultado
             success: function(data) {
                 console.log('Sucesso !');
                 var listaLI = new Array();
-                data.split(',').forEach(function(e){
-                    listaLI.push($('<li>').append(e));
+                data.split(',').forEach(function(privilegio){
+                    listaLI.push($('<li>').append(privilegio));
                 });
                 console.log(listaLI);
+                $('#privilegios').empty();
                 $('#privilegios').append(listaLI);
                 if (data != null){
                     $('#role_info').show();
                 }
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", $('#csrf_token').val());
             }
         });
     });

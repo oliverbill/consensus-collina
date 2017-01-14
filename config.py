@@ -25,7 +25,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SERVER_NAME = "localhost:8000" # deve ser o mesma URL na qual o GUNICORN esta escutando
+    SERVER_NAME = "localhost:5000" # em desenv, rodar serv do Flask, nao gunicorn
 # Sugerir Item Pauta - upload de anexos
     UPLOAD_FOLDER = os.environ.get('CONSENSUS_UPLOAD_FOLDER')
     THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
@@ -41,7 +41,6 @@ class TestingConfig(Config):
     WTF_CSRF_ENABLED = False
 
 
-# DEFINIR VARIAVEL DE AMBIENTE $HOST
 class ProductionConfig(Config):
     app = Flask(__name__)
     db = SQLAlchemy(app)

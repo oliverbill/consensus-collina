@@ -103,6 +103,10 @@ jQuery(document).ready(function() {
             success: function(data) {
                 console.log('Sucesso !');
                 result = data;
+            },
+            beforeSend: function(xhr) {
+                //$('#csrf_token').val() nao estava funcionando
+                xhr.setRequestHeader("X-CSRFToken", $('input:hidden:first').val());
             }
         });
         return result;
@@ -127,11 +131,21 @@ jQuery(document).ready(function() {
         });
 
         if (mapaAssembleiaSugestoes){
-            $.post('/atribuir-a-assembleia/', { mapa:JSON.stringify(mapaAssembleiaSugestoes)}, function( data ) {
-              $(location).attr('href', data)
+            $.ajax({
+                type: 'post',
+                data: { mapa:JSON.stringify(mapaAssembleiaSugestoes)},
+                url: '/atribuir-a-assembleia/',
+                async: false, // para poder retornar o resultado
+                success: function(data) {
+                    console.log('Sucesso !');
+                    $(location).attr('href', data)
+                },
+                beforeSend: function(xhr) {
+                    //$('#csrf_token').val() nao estava funcionando
+                    xhr.setRequestHeader("X-CSRFToken", $('input:hidden:first').val());
+                }
             });
         }
-
     });
 
 });

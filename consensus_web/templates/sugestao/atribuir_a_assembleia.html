@@ -42,6 +42,7 @@
     </div>
     <br>
 
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     {% for a in assembleias_heading %}
 
         {{ exibir_assembleias_e_sugestoes(a) }}

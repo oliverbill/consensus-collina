@@ -3,6 +3,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CsrfProtect
 
 from config import config_map
 
@@ -18,6 +19,7 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_map[config_name])
     config_map[config_name].init_app(app)
+    csrf = CsrfProtect(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
@@ -29,5 +31,6 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     moment.init_app(app)
+    csrf.init_app(app)
 # retorna app configurada
     return app

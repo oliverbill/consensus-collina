@@ -6,10 +6,10 @@
 <form role="form" class="form-horizontal" method="POST" action="{{ url_for('auth.edit_user') }}">
 
     <div class="form-group">
-        {{ form.hidden_tag() }}
+        {{ form.csrf_token() }}
         <label class="col-sm-1 control-label">{{ form.email.label }}</label>
         <div class="col-sm-4" style="width: 30% !important">
-          {{ form.email(class="form-control", maxlength="50") }}
+          {{ form.email(class="form-control", maxlength="50", readonly=true) }}
             {% for error in form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}<br>
@@ -31,14 +31,14 @@
 
     <div class="form-group">
         <label class="col-sm-1 control-label">{{ form.nome.label }}</label>
-        <div class="col-sm-4" style="width: 30% !important">
+        <div class="col-sm-4" style="width: 25% !important">
             {{ form.nome(class="form-control", maxlength="20") }}
         {% for error in form.nome.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
         </div>
         <label class="col-sm-1 control-label">{{ form.sobrenome.label }}</label>
-        <div class="col-sm-4" style="width: 30% !important">
+        <div class="col-sm-4" style="width: 35% !important">
             {{ form.sobrenome(class="form-control", maxlength="20") }}
         {% for error in form.sobrenome.errors %}
             <span style="color: red;">[{{ error }}]</span>
@@ -57,12 +57,14 @@
         <label class="col-sm-2 control-label">Alterar para:</label>
         <div class="col-sm-4" style="width: 15% !important">
             <select id="alterar_genero" name="alterar_genero" class="form-control">
+                <option value="" selected="selected"></option>
                 <option value="M">Masculino</option>
                 <option value="F">Feminino</option>
             </select>
         </div>
     </div>
 
+    {% if user.morador %}
     <div class="form-group">
         <label class="col-sm-3 control-label" style="text-align: left" > Número do Apartamento: </label>
         <div class="col-sm-2" style="width: 10% !important">
@@ -79,6 +81,7 @@
         {% endfor %}<br>
         </div>
     </div>
+    {% endif %}
 
     <div class="form-group">
         <label class="col-sm-1 control-label">Role:</label>
@@ -88,6 +91,7 @@
         <label class="col-sm-2 control-label">Alterar para:</label>
         <div class="col-sm-4" style="width: 25% !important">
             <select id="roles" name="roles" class="form-control">
+                <option value="" selected="selected"></option>
             {% for r in roles %}
                 <option value="{{ r.id }}">{{ r.nome }}</option>
             {% endfor %}

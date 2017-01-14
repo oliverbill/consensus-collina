@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-gunicorn wsgi:app
+gunicorn wsgi:app --preload

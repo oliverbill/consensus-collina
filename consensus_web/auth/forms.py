@@ -1,8 +1,24 @@
 from flask_wtf import Form
-from wtforms.fields import StringField, SubmitField, PasswordField, SelectField
-from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo, ValidationError
+from wtforms.fields import StringField, SubmitField, PasswordField, SelectField, BooleanField
+from wtforms.validators import Optional, DataRequired, Email, Length, Regexp, EqualTo, ValidationError
 
 from consensus_web.models import User, Role
+
+
+class LoginForm(Form):
+    email = StringField('Email', validators=[DataRequired(message=u"por favor, informe seu e-mail"),
+                                             Email(message=u"por favor, informe um e-mail válido")],
+                        render_kw={"placeholder": "e-mail", "class" : "form-username form-control"})
+
+    password = PasswordField('Senha', validators=[DataRequired(message="por favor, informe sua senha")],
+                            render_kw = {"placeholder": "senha", "class" : "form-password form-control", "size" : "10" })
+
+    remember_me = BooleanField(u'Lembre-me')
+
+    submit = SubmitField(u'Entrar', render_kw = {"class" : "btn btn-default"})
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
 
 
 class UserForm(Form):
@@ -10,8 +26,8 @@ class UserForm(Form):
     nome = StringField(u'Nome: ',validators=[DataRequired("campo obrigatório")])
     sobrenome = StringField(u'Sobrenome: ',validators=[DataRequired("campo obrigatório")])
 
-    # dataNascimento criado manualmente
-    # genero criado manualmente
+    ## dataNascimento criado manualmente
+    ## genero criado manualmente
 
     num_ap = StringField(u'Núm. do Apartamento: ',validators=[DataRequired("campo obrigatório")])
     bloco = StringField(u'Bloco: ',validators=[DataRequired("campo obrigatório")])
@@ -32,6 +48,31 @@ class UserForm(Form):
     def validate_email(self, field):
         if User.query.get(field.data):
             raise ValidationError(u'Email já cadastrado')
+
+## nenhum campo pode ser obrigatorio ja q o usuario pode alterar qq campo
+class UserEditForm(Form):
+    email = StringField(u'E-mail: ', validators=[Optional(strip_whitespace=False),Length(1, 64),Email("e-mail inválido")])
+    nome = StringField(u'Nome: ', validators=[Optional(strip_whitespace=False)])
+    sobrenome = StringField(u'Sobrenome: ', validators=[Optional(strip_whitespace=False)])
+
+    ## dataNascimento criado manualmente
+    ## genero criado manualmente
+
+    num_ap = StringField(u'Núm. do Apartamento: ', validators=[Optional(strip_whitespace=False)])
+    bloco = StringField(u'Bloco: ', validators=[Optional(strip_whitespace=False)])
+
+    criar = SubmitField(u'Criar Usuário')
+
+    def __init__(self, *args, **kwargs):
+        super(UserEditForm, self).__init__(*args, **kwargs)
+
+    def validate(self):
+        if super(UserEditForm, self).validate():
+            if self.num_ap.data != "":
+                if self.bloco.data == "":
+                    self.bloco.errors.append(u'Informe o bloco do apartamento')
+                    return False
+            return True;
 
 
 class RoleForm(Form):

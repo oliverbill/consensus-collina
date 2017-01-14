@@ -6,15 +6,24 @@ jQuery(document).ready(function() {
      });
 
 
-    $('#btn_confirmar').on('click', function (event) {
-          num_sugestao = $('#num_sugestao').val();
-          url = "/aprovar-sugestao/" + num_sugestao + "/"
+      $('#btn_confirmar').on('click', function (event) {
+        num_sugestao = $('#num_sugestao').val();
+        var url_var = "/aprovar-sugestao/" + num_sugestao + "/"
 
-          $.post( url, function( data ) {
-              $(location).attr('href', data)
-          });
+        $.ajax({
+            type: 'POST',
+            url: url_var,
+            success: function( data ) {
+                    $(location).attr('href', data);
+                  },
+            async: false, // para poder retornar o resultado
+            beforeSend: function(xhr) {
+                //$('#csrf_token').val() nao estava funcionando
+                xhr.setRequestHeader("X-CSRFToken", $('input:hidden:first').val());
+            }
+        });
 
-          $('#modal').modal('hide');
+        $('#modal').modal('hide');
     })
 
 });

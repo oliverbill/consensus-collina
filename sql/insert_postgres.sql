@@ -2,15 +2,15 @@
 -- no select de acordo com a variavel timezone(que recebe o timezone do Sistema Operaconal).
 -- Para altera-la, use: 
 -- SELECT date_format(dt_hora_criacao,'%d-%m-%Y %h:%i:%s') from assembleias
-INSERT INTO assembleias	
+INSERT INTO assembleias  
 (dt_hora_inicio,dt_hora_fim)
 VALUES
-(TO_CHAR(current_date, '%d/%m/%Y %h:%i'),TO_CHAR(current_date + INTERVAL '7' DAY, '%d/%m/%Y %h:%i'));
+(TO_CHAR(current_date, 'DD/MM/YYYY HH24:MI'),TO_CHAR(current_date + INTERVAL '7' DAY, 'DD/MM/YYYY HH24:MI'));
 
 INSERT INTO assembleias
 (dt_hora_inicio,dt_hora_fim)
 VALUES
-(TO_CHAR(current_date + INTERVAL '14' DAY, '%d/%m/%Y %h:%i'),TO_CHAR(current_date + INTERVAL '21' DAY, '%d/%m/%Y %h:%i'));
+(TO_CHAR(current_date + INTERVAL '14' DAY, 'DD/MM/YYYY HH24:MI'),TO_CHAR(current_date + INTERVAL '21' DAY, 'DD/MM/YYYY HH24:MI'));
 
  INSERT INTO opcoes_voto(nome)
  VALUES('contra/a favor/abster-se');
@@ -58,29 +58,38 @@ INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,13);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,14);
 
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,2);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,3);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,4);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,5);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,6);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,7);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,8);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,9);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,10);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,11);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,12);
-INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,14);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,3);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,4);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,5);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,6);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,7);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,8);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,9);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,10);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,11);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,12);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,14);
+
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,4);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,9);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,10);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,11);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,12);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,15);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,17);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,20);
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
 VALUES ('alves.bill@gmail.com','pbkdf2:sha1:1000$KYl6HeL0$9dfed60d4b31e7533f529a2b3da65c3002c69995',2,
-		'William','Alves',TO_CHAR(TO_DATE('19-06-1983','DD-MM-YYYY'), '%d/%m/%Y'),'M'); -- senha baleia302
+		'William','Alves','19-06-1983','M'); -- senha baleia302
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
 VALUES ('bicuda@gmail.com','pbkdf2:sha1:1000$FMeVVA7l$fc308f7797fb05e714467075b6fb9ec06ff25f60',3,
-		'Estela','Bicuda',TO_CHAR(TO_DATE('19-01-1955','DD-MM-YYYY'), '%d/%m/%Y'),'F');-- senha caracas
+		'Estela','Bicuda','19-01-1955','F');-- senha caracas
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
 VALUES ('superman@gmail.com','pbkdf2:sha1:1000$MNTOcpCz$77954fd0c6161a52efba94b99c1a0aca63d7155b',1,
-		'Kal','El',TO_CHAR(TO_DATE('17-05-1910','DD-MM-YYYY'), '%d/%m/%Y'),'M'); -- senha crypton
+		'Kal','El','17-05-1910','M'); -- senha crypton
 
 INSERT INTO morador(num_ap,bloco,usuario_id)
 VALUES (183,'C1','alves.bill@gmail.com');

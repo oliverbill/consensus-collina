@@ -6,22 +6,6 @@ from wtforms.validators import DataRequired, Email
 from consensus_web.models import OpcaoVoto
 
 
-class LoginForm(Form):
-    email = StringField('Email', validators=[DataRequired(message=u"por favor, informe seu e-mail"),
-                                             Email(message=u"por favor, informe um e-mail válido")],
-                        render_kw={"placeholder": "e-mail", "class" : "form-username form-control"})
-
-    password = PasswordField('Senha', validators=[DataRequired(message="por favor, informe sua senha")],
-                            render_kw = {"placeholder": "senha", "class" : "form-password form-control", "size" : "10" })
-
-    remember_me = BooleanField(u'Lembre-me')
-
-    submit = SubmitField(u'Entrar', render_kw = {"class" : "btn btn-default"})
-
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-
-
 class SugerirItemPautaForm(Form):
     titulo = StringField(u'Título: ', validators=[DataRequired("campo obrigatório")])
     descricao = TextAreaField(u'Descrição: ', validators=[DataRequired("campo obrigatório")])

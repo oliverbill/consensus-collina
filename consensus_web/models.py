@@ -277,17 +277,19 @@ class User(db.Model,UserMixin):
     def id(self):
         return self.__id
 
-    def alterar(self,email,nome,sobrenome,dt_nascimento,genero,num_ap,bloco,role):
-        if self.__id != email: self.__id = email
-        if self.nome != nome: self.nome = nome
-        if self.sobrenome != sobrenome: self.sobrenome = sobrenome
-        if self.dataNascimento != dt_nascimento: self.dataNascimento = dt_nascimento
-        if self.genero != genero: self.genero = genero
-        if self.role != role: self.__role = role
+    def alterar(self,nome,sobrenome,dt_nascimento,genero,num_ap,bloco,role):
+        if nome: self.nome = nome
+        if sobrenome: self.sobrenome = sobrenome
+        if dt_nascimento: self.dataNascimento = dt_nascimento
+        if genero: self.genero = genero
+        if role: self.__role = role
 
-        if self.morador.num_ap != num_ap: self.morador.num_ap = num_ap
-        if self.morador.bloco != bloco: self.morador.bloco = bloco
-
+        if num_ap and bloco:
+            #for morador in Morador.query.filter(Morador.usuario_id == self.__id).all():
+            morador = Morador.query.filter(Morador.usuario_id == self.__id).one()
+            morador.num_ap = num_ap
+            morador.bloco = bloco
+            db.session.add(morador)
         db.session.add(self)
         db.session.commit()
 
@@ -353,10 +355,6 @@ class Role(db.Model):
     def __init__(self, nome):
         super(Role, self).__init__()
         self.nome = nome
-
-    def __repr__(self):
-        return "[Id: "+self.__id+",Nome: "+self.nome+"Permissões: "\
-               +self.permissoes_da_role+",Usuários: "+self.usuarios
 
     @property
     def id(self):
