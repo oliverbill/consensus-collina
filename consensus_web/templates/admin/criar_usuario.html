@@ -4,9 +4,8 @@
 
 {% block form %}
 <form role="form" class="form-horizontal" method="POST" action="{{ url_for('auth.add_user') }}">
-
     <div class="form-group">
-        {{ form.csrf_token() }}
+        {{ form.hidden_tag() }}
         <label class="col-sm-1 control-label">{{ form.email.label }}</label>
         <div class="col-sm-10" style="width: 30% !important">
           {{ form.email(class="form-control", maxlength="50") }}
@@ -83,9 +82,7 @@
         </div>
         <div class="popover-example col-sm-4 custom_popover" id="role_info" style="display:none">
             <div class="popover-title"><h4>Privilégios:</h4></div>
-            <div class="popover-content" id="privilegios">
-
-            </div>
+            <div class="popover-content" id="privilegios"></div>
         </div>
     </div>
 

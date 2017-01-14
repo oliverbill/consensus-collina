@@ -4,9 +4,8 @@
 
 {% block form %}
 <form role="form" class="form-horizontal" method="POST" action="{{ url_for('auth.edit_user') }}">
-
     <div class="form-group">
-        {{ form.csrf_token() }}
+        {{ form.hidden_tag() }}
         <label class="col-sm-1 control-label">{{ form.email.label }}</label>
         <div class="col-sm-4" style="width: 30% !important">
           {{ form.email(class="form-control", maxlength="50", readonly=true) }}

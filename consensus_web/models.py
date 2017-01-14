@@ -263,7 +263,10 @@ class User(db.Model,UserMixin):
         self.__role = role
         self.hash_senha = generate_password_hash(password)
         if num and bloco:
-            self.morador = Morador(num_ap=num,bloco=bloco,user_id=self.__id)
+            morador = Morador(num_ap=num,bloco=bloco,user_id=self.__id)
+            db.session.add(morador)
+        db.session.add(self)
+        db.session.commit()
 
     @property
     def role(self):
