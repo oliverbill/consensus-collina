@@ -1,0 +1,22 @@
+{{ moment.include_jquery() }}
+{{ moment.include_moment() }}
+{{ moment.locale('pt-BR') }}
+
+<ul class="comments">
+    {% for c in comentarios %}
+    <li class="comment">
+        <div class="comment-content">
+            <div class="comment-thumbnail col-lg-1">
+                <img class="img-rounded profile-thumbnail" src="{{ c.gravatar_img_src }}">
+            </div>
+            <div class="comment-date col-lg-2">{{ moment(c.dataHoraCriacaoAsDate).fromTime(agora) }}</div>
+            <div class="comment-author col-lg-4">{{ c.nomeAutor }}</div>
+            <div class="comment-body col-lg-5">
+            {% if c.texto %}
+                {{ c.texto | safe }}
+            {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

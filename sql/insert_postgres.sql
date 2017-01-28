@@ -42,6 +42,8 @@ INSERT INTO permissoes(id,nome) VALUES(17,'ALTERAR_ASSEMBLEIA');
 INSERT INTO permissoes(id,nome) VALUES(18,'ATRIBUIR_ASSEMBLEIA');
 INSERT INTO permissoes(id,nome) VALUES(19,'DESFAZER_REJEICAO');
 INSERT INTO permissoes(id,nome) VALUES(20,'LISTAR_ITEM_PAUTA');
+INSERT INTO permissoes(id,nome) VALUES(21,'EXIBIR_USUARIOS');
+INSERT INTO permissoes(id,nome) VALUES(22,'AVALIAR_SUGESTAO_ITEM_PAUTA');
 
 INSERT INTO roles(id,nome) VALUES(1,'ADMIN DO SISTEMA');
 INSERT INTO roles(id,nome) VALUES(2,'MORADORES');
@@ -49,6 +51,8 @@ INSERT INTO roles(id,nome) VALUES(3,'SINDICOS');
 INSERT INTO roles(id,nome) VALUES(4,'ADMIN DO CONDOMINIO');
 
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(1,1);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(1,21);
+
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,2);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,5);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,8);
@@ -69,6 +73,10 @@ INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,10);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,11);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,12);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,14);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,18);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,20);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,21);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,22);
 
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,4);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,9);
@@ -78,24 +86,34 @@ INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,12);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,15);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,17);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,20);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(4,21);
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
-VALUES ('alves.bill@gmail.com','pbkdf2:sha1:1000$KYl6HeL0$9dfed60d4b31e7533f529a2b3da65c3002c69995',2,
-		'William','Alves','19-06-1983','M'); -- senha baleia302
+VALUES ('alves.bill@gmail.com','pbkdf2:sha1:1000$2aZOWld2$9aa41a8dcbb0a0eba9954461161e18e49bf650a5',2,
+		'William','Alves','19-06-1983','M'); -- senha baleia302%
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
-VALUES ('bicuda@gmail.com','pbkdf2:sha1:1000$FMeVVA7l$fc308f7797fb05e714467075b6fb9ec06ff25f60',3,
-		'Estela','Bicuda','19-01-1955','F');-- senha caracas
+VALUES ('emilio@hotmail.com.br','pbkdf2:sha1:1000$naXQnraF$c47fe940f299d44dca4d0b094d38f39c730b6201',2,
+		'Emilio','Zurita','19-02-1922','M'); -- senha emilio123%
 
 INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
-VALUES ('superman@gmail.com','pbkdf2:sha1:1000$MNTOcpCz$77954fd0c6161a52efba94b99c1a0aca63d7155b',1,
-		'Kal','El','17-05-1910','M'); -- senha crypton
+VALUES ('bicuda@gmail.com','pbkdf2:sha1:1000$wvtiAAfc$d2007596a16166205116d5cbbab0269aa73365b4',3,
+		'Estela','Bicuda','19-01-1955','F');-- senha caracas123%
 
-INSERT INTO morador(num_ap,bloco,usuario_id)
+INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
+VALUES ('lalau@hotmail.com','pbkdf2:sha1:1000$sjYE3YSR$f6231881cb3bed5c67e618305b7a2cf39e5d0c23',4,
+		'Lalau','Kobayashi','12-05-1913','M'); -- senha lalau123%
+
+INSERT INTO usuarios(id,hash_senha,role_id,nome,sobrenome,dt_nascimento,genero)
+VALUES ('superman@gmail.com','pbkdf2:sha1:1000$YUME66Ai$234e58dd2231d14b210009130fa0b6700f935324',1,
+		'Kal','El','17-05-1910','M'); -- senha crypton123%
+
+INSERT INTO moradores(num_ap,bloco,usuario_id)
 VALUES (183,'C1','alves.bill@gmail.com');
 
-INSERT INTO morador(num_ap,bloco,usuario_id)
-VALUES (51,'B1','bicuda@gmail.com');
+INSERT INTO moradores(num_ap,bloco,usuario_id)
+VALUES (22,'C2','emilio@hotmail.com.br');
 
-INSERT INTO morador(num_ap,bloco,usuario_id)
-VALUES (273,'A1','alves.bill@gmail.com');
+INSERT INTO sugestoes_itempauta(titulo,descricao,email_autor,opcao_voto) values ('Aprovacao da Padaria',
+'A moradora sra. Neide do 283 C2, está apresentando o projeto anexo para instalação de uma padaria no condomínio. 
+Pede-se que os moradores votem na aprovação do projeto.','alves.bill@gmail.com',1);
