@@ -60,6 +60,7 @@ INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,10);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,11);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,13);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,14);
+INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(2,21);
 
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,2);
 INSERT INTO permissoes_roles(role_id,permissao_id) VALUES(3,3);

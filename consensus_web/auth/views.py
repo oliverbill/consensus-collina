@@ -37,6 +37,7 @@ def exibir_usuarios():
 
 @login_required
 @auth.route('/admin/add-user',methods = ['GET','POST'])
+@permission_required(ConsensusTask.ADMINISTRAR_SISTEMA)
 def add_user():
     form = UserForm(request.form)
     roles = Role.query.all()
@@ -64,6 +65,7 @@ def add_user():
 @login_required
 @auth.route('/admin/edit-user/<user_email>/',methods = ['GET','POST'])
 @auth.route('/admin/edit-user/',methods = ['GET','POST'])
+@permission_required(ConsensusTask.ADMINISTRAR_SISTEMA)
 def edit_user(user_email=None):
     form = UserEditForm(request.form)
     roles = Role.query.all()
@@ -109,6 +111,7 @@ def preencher_form(form,user_preenchido,roles):
 
 @login_required
 @auth.route('/get-permissoes/', methods = ['POST'])
+@permission_required(ConsensusTask.ADMINISTRAR_SISTEMA)
 def get_permissoes():
     try:
         role_id = request.form['role_id']
@@ -125,6 +128,7 @@ def get_permissoes():
 
 @login_required
 @auth.route('/admin/remove-user/<user_email>/', methods = ['GET','POST'])
+@permission_required(ConsensusTask.ADMINISTRAR_SISTEMA)
 def excluir_user(user_email):
     u = User.query.get(user_email)
     db.session.delete(u)
