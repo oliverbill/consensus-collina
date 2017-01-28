@@ -29,8 +29,8 @@ class UserForm(Form):
     ## dataNascimento criado manualmente
     ## genero criado manualmente
 
-    num_ap = StringField(u'Núm. do Apartamento: ',validators=[DataRequired("campo obrigatório")])
-    bloco = StringField(u'Bloco: ',validators=[DataRequired("campo obrigatório")])
+    num_ap = StringField(u'Núm. do Apartamento: ') # n eh "required" pq usuario sendo cadastrado pode nao ser morador
+    bloco = StringField(u'Bloco: ') # n eh "required" pq usuario sendo cadastrado pode nao ser morador
 
     senha = PasswordField(u'Senha: ',validators=[DataRequired("campo obrigatório"),
                                                  Regexp(regex='[A-Za-z0-9@#$%^&+=]{8,10}',

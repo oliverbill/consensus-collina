@@ -36,7 +36,7 @@ class Assembleia(db.Model):
     __dataHoraInicio = db.Column(db.String(30),name="dt_hora_inicio", nullable=False)
     __dataHoraFim = db.Column(db.String(30), name="dt_hora_fim", nullable=False)
 
-    itemsPautas = relationship("ItemPauta", backref="assembleias", cascade="all, delete-orphan")
+    itemsPautas = db.relationship("ItemPauta", backref="assembleias", cascade="all, delete-orphan")
 
     def __init__(self, dtinicio, dtfim):
         super(Assembleia, self).__init__()
@@ -74,6 +74,7 @@ class StatusItemPauta(Enum):
      CRIADO = 'CRIADO'  # apos aprovacao da sugestao pela sindica
      EM_VOTACAO = 'EM_VOTACAO' # apos atribuição de assembleia
      QUESTIONADO = 'QUESTIONADO'  # por suspeita de infringir o RI
+     ENCERRADO = 'ENCERRADO'
      ANULADO = 'ANULADO'  # caso questionamento seja aceito
      EXCLUIDO = 'EXCLUIDO'  # caso seja criado por erro
 
@@ -104,13 +105,42 @@ class ComentariosItemPauta(db.Model):
 
     __num = db.Column(db.BigInteger, primary_key=True, autoincrement=True, name="num")
     texto = db.Column(db.String(255), unique=True, nullable=False)
+    __dataHoraCriacao = db.Column(db.TIMESTAMP, name="dt_hora_criacao", nullable=False,
+                            server_default=db.func.now())
+    gravatar_src = db.Column(db.String(255), nullable=False)
 
     itempauta = db.Column(db.BigInteger, db.ForeignKey('itemspautas.num'), nullable=False, name="num_itempauta")
+    autor = db.Column(db.BigInteger, db.ForeignKey('moradores.num'), nullable=True, name="num_morador")
 
-    def __init__(self, texto, it):
+    def __init__(self, texto, it, autor, gravatar_src):
         super(ComentariosItemPauta, self).__init__()
         self.texto = texto
         self.itempauta = it
+        self.autor = autor
+        self.gravatar_src = gravatar_src
+
+    @property ## atributo "num" eh somente leitura
+    def num(self):
+        return self.__num
+
+    @property
+    def gravatar_img_src(self):
+        return self.gravatar_src
+
+    @property ## recupera a data no formato 'DD-MM-YY hh:mm:ss' e retorna STRING
+    def dataHoraCriacao(self):
+        local_datetime = self.__dataHoraCriacao.strftime('%d-%m-%Y %H:%M:%S')
+        return local_datetime
+
+    @property
+    def dataHoraCriacaoAsDate(self):
+        return self.__dataHoraCriacao
+
+    @property
+    def nomeAutor(self):
+        morador = Morador.query.get(self.autor)
+        u = User.query.get(morador.usuario_id)
+        return u.nome+' '+u.sobrenome
 
 
 class ItemPauta(db.Model):
@@ -120,23 +150,30 @@ class ItemPauta(db.Model):
     status = db.Column(db.String(70), server_default='CRIADO')
 
     assembleia = db.Column(db.BigInteger, db.ForeignKey('assembleias.num'), nullable=False, name="num_assembleia")
-    sugestao_itempauta = db.Column(db.BigInteger, db.ForeignKey('sugestoes_itempauta.num'),
-                                   name="num_sugestao", nullable=False)
+    sug_itempauta_num = db.Column(db.BigInteger, db.ForeignKey('sugestoes_itempauta.num'),
+                                  name="num_sugestao", nullable=False)
 
+    sug_itempauta = db.relationship("SugestaoItemPauta", backref=db.backref("itemspautas", uselist=False))# obrigatorio em one-to-one
     comentarios = db.relationship("ComentariosItemPauta", backref="itemspautas", cascade="all, delete-orphan")
+    votos = db.relationship("Voto", backref="itemspautas", cascade="all, delete-orphan")
 
     def __init__(self, assembleia, sugestao):
         super(ItemPauta, self).__init__()
         self.assembleia = assembleia
-        self.sugestao_itempauta = sugestao
+        self.sug_itempauta_num = sugestao
 
     @property
     def get_obj_sugestao(self):
-        return SugestaoItemPauta.query.get(self.sugestao_itempauta)
+        return SugestaoItemPauta.query.get(self.sug_itempauta_num)
 
     @property
     def num(self):
         return self.__num
+
+    @property
+    def nomeAutor(self):
+        u = User.query.get(self.sug_itempauta.autor)
+        return u.nome+' '+u.sobrenome
 
 
 class StatusSugestao(Enum):
@@ -154,7 +191,7 @@ class SugestaoItemPauta(db.Model):
     status = db.Column(db.String(70), server_default='NAO_AVALIADA')
     justif_reprovacao = db.Column(db.String(255))
 
-    autor = db.Column(db.String(70), db.ForeignKey('usuarios.id'), name="email_autor", nullable=False)
+    autor = db.Column(db.String(70), db.ForeignKey('usuarios.id'), name="email_autor", nullable=True) # para permitir deletar um usuario sem deletar suas sugestoes
     op_voto = db.Column(db.Integer, db.ForeignKey('opcoes_voto.num'), name="opcao_voto", nullable=False)
 
     anexos = db.relationship("AnexoModel", backref="itemspautas", cascade="all, delete-orphan", lazy='subquery')
@@ -223,18 +260,28 @@ class AnexoTemp(db.Model):
         self.url_download = url
         self.usuario = usuario
 
+
 class Morador(db.Model):
+    __tablename__ = 'moradores'
+
     __num = db.Column(db.BigInteger, name="num", autoincrement=True, primary_key=True)
     num_ap = db.Column(db.Integer, default=False)
     bloco = db.Column(db.String(3), nullable=False)
 
     usuario_id = db.Column(db.String(50), db.ForeignKey('usuarios.id'), name="usuario_id", nullable=False)
 
+    user = db.relationship("User", backref="moradores", cascade="all, delete-orphan", single_parent=True)
+    comentarios = db.relationship("ComentariosItemPauta", backref="moradores", cascade="all, delete-orphan")
+
     def __init__(self, num_ap, bloco, user_id):
         super(Morador, self).__init__()
         self.num_ap = num_ap
         self.bloco = bloco
         self.usuario_id = user_id
+
+    @property ## atributo "num" eh somente leitura
+    def num(self):
+        return self.__num
 
 
 class User(db.Model,UserMixin):
@@ -252,6 +299,8 @@ class User(db.Model,UserMixin):
     __role = db.Column(db.Integer, db.ForeignKey('roles.id'), name="role_id", nullable=False)
 
     morador = db.relationship("Morador", backref="usuarios", cascade="all, delete-orphan")
+    sugestoes_it = db.relationship("SugestaoItemPauta", backref="usuarios", cascade="save-update, merge")
+    votos = db.relationship("Voto", backref="usuarios", cascade="all")
 
     def __init__(self, email, password, nome, sobrenome, dataNascimento, genero, role, num=None, bloco=None):
         super(User, self).__init__()
@@ -288,7 +337,6 @@ class User(db.Model,UserMixin):
         if role: self.__role = role
 
         if num_ap and bloco:
-            #for morador in Morador.query.filter(Morador.usuario_id == self.__id).all():
             morador = Morador.query.filter(Morador.usuario_id == self.__id).one()
             morador.num_ap = num_ap
             morador.bloco = bloco
@@ -296,11 +344,14 @@ class User(db.Model,UserMixin):
         db.session.add(self)
         db.session.commit()
 
-    def pode(self, task):
-        return self.__role is not None and task in self.__role.permissoes_da_role
+    def pode(self, permissao):
+        role = Role.query.get(self.__role)
+        return Permissao.query.filter(Permissao.nome == permissao.name).one() in role.permissoes_da_role
 
+    @property
     def is_administrador(self):
-        return self.pode(ConsensusTask.ADMINISTRAR_SISTEMA)
+        p = Permissao.query.filter(Permissao.nome == ConsensusTask.ADMINISTRAR_SISTEMA.name).one()
+        return self.pode(permissao = p)
 
     def is_senha_correta(self, password):
         return check_password_hash(self.hash_senha, password)
@@ -312,7 +363,7 @@ class User(db.Model,UserMixin):
     @property
     def is_morador(self):
         eh_morador = Morador.query.filter(Morador.usuario_id == self.__id).all()
-        if eh_morador is None:
+        if not eh_morador:
             return "Não"
         else:
             return "Sim"
@@ -353,7 +404,7 @@ class Role(db.Model):
     permissoes_da_role = db.relationship("Permissao", backref="roles", cascade="all, delete-orphan",
                                   secondary=permissoes_roles, single_parent = True)
 
-    usuarios = db.relationship("User", backref="roles", cascade="all, delete-orphan" )
+    usuarios = db.relationship("User", backref="roles", cascade="all" )
 
     def __init__(self, nome):
         super(Role, self).__init__()
@@ -366,6 +417,7 @@ class Role(db.Model):
 
 class ConsensusTask(Enum):
     ADMINISTRAR_SISTEMA = 'ADMINISTRAR_SISTEMA'
+    EXIBIR_USUARIOS = 'EXIBIR_USUARIOS'
     SUGERIR_ITEM_PAUTA = 'SUGERIR_ITEM_PAUTA'
     AVALIAR_SUGESTAO_ITEM_PAUTA = 'AVALIAR_SUGESTAO_ITEM_PAUTA'
     GERAR_ATA_ASSEMBLEIA = 'GERAR_ATA_ASSEMBLEIA'

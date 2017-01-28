@@ -10,6 +10,7 @@
 
     <title>Sistema Consensus - {% block form_title %} {% endblock %} </title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles-flasky.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
@@ -71,7 +72,7 @@
     <!-- The File Upload user interface plugin -->
     <script src="{{ url_for('static', filename='js/jquery.fileupload-ui.js') }}"></script>
     <!-- The main application script -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/file-upload.js') }}"></script>
     <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
     <!--[if (gte IE 8)&(lt IE 10)]>
     <script src="{{ url_for('static', filename='js/cors/jquery.xdr-transport.js') }}"></script>

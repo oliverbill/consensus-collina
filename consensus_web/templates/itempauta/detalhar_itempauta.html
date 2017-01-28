@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+
+{% block form_title %} Detalhes do Item de Pauta {{ it.num }} {% endblock %}
+
+{% block form %}
+    <form action="{{ url_for('main.votar_itempauta') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <table class="table larga" id="detalhe-itempauta">
+            <tr>
+                <td><label> Num. Item: </label></td><td>{{ it.num }}</td>
+            </tr>
+            <tr>
+                <td><label>Titulo: </label></td><td>{{ it.sug_itempauta.titulo }}</td>
+            </tr>
+            <tr>
+                <td ><label>Descricao: </label></td><td><longdesc>{{ it.sug_itempauta.descricao }}</longdesc></td>
+            </tr>
+            <tr>
+                <td><label>Situacao: </label></td><td><span class="label label-info"> {{ it.status }} </span> </td>
+            </tr>
+            <tr>
+                <td><label>Autor: </label></td>
+                <td>{% if not it.sug_itempauta.autor %}
+                        <font color="red"><b> [usuario removido] </b></font>
+                    {% else %}
+                        {{ it.nomeAutor }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><label>Opcoes de Voto: </label></td>
+                <td>
+                  {% for op in opcoes_voto.get(it.num) %}
+                      <label class="btn btn-default">
+                         <strong>{{ op }}</strong>
+                      </label>
+                   {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td><label>Anexos: </label></td>
+                <td>
+                    {% for a in it.sug_itempauta.anexos %}
+                    <p>
+                        <a href="{{ a.url_download }}">{{a.nome}}</a>
+                    </p>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+        <br>
+    </form>
+
+    <div class="row" align="center">
+        <div class="center-block text-center">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#comentarios"
+            aria-expanded="false" aria-controls="comentarios">
+                  VER COMENTARIOS
+        </button>
+        <div class="collapse" id="comentarios">
+            {% include '/itempauta/comentarios.html' %}
+        </div>
+        <a role="button" href="javascript:window.history.back()" class="btn btn-warning"> Voltar </a>
+        </div>
+    </div>
+
+    <br>
+{% endblock %}

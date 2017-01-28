@@ -3,18 +3,37 @@
     {% block form_title %} Assembleias Encerradas {% endblock %}
 
     {% block form %}
-        <form action="{{ url_for('main.listar_itens_de_pauta_da_assembleia') }}" method="post">
-            <ul class="list-group">
+
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.locale('pt-BR') }}
+
+        <div class="row">
             {% for a in assembleias %}
-                <li class="post">
-                    <div class="profile-thumbnail">
-                    </div>
-                    <div class="post-body">
-                        <button role="link" type="submit" class="btn btn-link" id="link_num_assembleia" value="{{ a.num }}" >
-                            <strong>Número da Assembléia:</strong> {{ a.num }}
-                        </button>
-                    </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <div class="caption">
+                      <p>
+                          encerrada em
+                            <span class="label label-danger"> {{ a.dataHoraFim }}</span>
+                      </p>
+                      <p>
+                          <div class="well"><h3 align="center">Assembléia de {{ a.dataHoraInicio }}</h3></div>
+                      </p>
+                      {% if a.itemsPautas %}
+                      <p align="center">
+                            <a role="button" class="btn btn-primary"
+                                 href="{{ url_for('main.listar_itens_de_pauta_da_assembleia',
+                                            num_assembleia=a.num, status='ENCERRADO') }}">
+                                <span class="glyphicon glyphicon-list-alt"></span> Itens de Pauta
+                            </a>
+                      </p>
+                      {% endif %}
+                  </div>
+
+                </div>
+              </div>
             {% endfor %}
-            </ul>
-        </form>
+        </div>
+
     {% endblock %}

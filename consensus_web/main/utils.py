@@ -1,6 +1,6 @@
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template, url_for, request
 from flask_login import current_user
-
+import hashlib
 from ..models import AnexoModel,OpcaoVoto, Voto, SugestaoItemPauta, ItemPauta, AnexoTemp
 
 
@@ -16,7 +16,7 @@ def incluir_anexos(db, num_sugestao):
 def incluir_opcao_voto(combo_votacao_outros, db):
     valor = set()
     for o in combo_votacao_outros:
-        valor.add(o)
+        valor.add(o.data)
     vl_formatado = '/ '.join(valor)
     nova_op = OpcaoVoto(vl_formatado)
     db.session.add(nova_op)
@@ -34,7 +34,7 @@ def get_op_voto_por_sugestao(sugestao):
 def get_op_voto_por_itempauta(itens):
     opcoes_voto = {}
     for it in itens:
-        sugestao = SugestaoItemPauta.query.get(it.sugestao_itempauta)
+        sugestao = it.sug_itempauta
         op_nomes = OpcaoVoto.query.get(sugestao.op_voto).nome
         op_nomes_split = op_nomes.split('/')
         opcoes_voto[it.num] = op_nomes_split
@@ -64,3 +64,17 @@ def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, num_assembleia = No
                            itens_de_pauta=itens_pauta,
                            opcoes_voto=opcoes_voto,
                            num_assembleia = num_assembleia)
+
+
+def gravatar(request, email, size=100, default='identicon', rating='g'):
+    if request:
+        if request.is_secure:
+            url = 'https://secure.gravatar.com/avatar'
+        else:
+            url = 'http://www.gravatar.com/avatar'
+
+        hash = email or hashlib.md5(email.encode('utf-8')).hexdigest()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating)
+    else:
+        Exception("request nulo")

@@ -6,28 +6,28 @@ from flask import request, render_template, url_for, redirect, flash, jsonify, j
 from flask_login import login_required, current_user
 
 from . import main
-from .utils import incluir_anexos, incluir_opcao_voto, get_op_voto_por_sugestao, \
-    remover_itens_ja_votados, nenhum_itempauta_ou_listar_com_op_voto
+from .utils import incluir_anexos, incluir_opcao_voto, get_op_voto_por_sugestao,\
+    remover_itens_ja_votados, nenhum_itempauta_ou_listar_com_op_voto,get_op_voto_por_itempauta,gravatar
 from .. import db
 from ..decorators import permission_required
-from ..main.forms import SugerirItemPautaForm
+from ..main.forms import SugerirItemPautaForm, ReprovarSugestaoForm
 from ..models import ItemPauta, ConsensusTask, Assembleia, OpcaoVoto, Voto, StatusItemPauta, \
-    SugestaoItemPauta, ComentariosItemPauta
+    SugestaoItemPauta, ComentariosItemPauta, Morador
 
 
 @main.route('/', methods = ['GET','POST'])
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("index.html",is_home=True)
 
 
 ############################################
 ############## ITEM DE PAUTA ###############
 ############################################
 
-@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-itenspauta/<status>', methods = ['GET'])
 @login_required
+@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 def listar_itens_de_pauta_status(status):
     if status not in StatusItemPauta.__members__:
         flash(u"Status inexistente: " + status)
@@ -39,9 +39,9 @@ def listar_itens_de_pauta_status(status):
         (msg=u"Não há Itens de Pauta com situação " + status, itens_pauta=itens_pauta)
 
 
-@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-itenspauta/<num_assembleia>/', methods = ['GET'])
 @login_required
+@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 def listar_itens_de_pauta_da_assembleia(num_assembleia):
     itens_pauta = ItemPauta.query\
         .filter(ItemPauta.assembleia == num_assembleia).all()
@@ -51,9 +51,9 @@ def listar_itens_de_pauta_da_assembleia(num_assembleia):
             num_assembleia=num_assembleia)
 
 
-@permission_required(ConsensusTask.VOTAR_ITEM_PAUTA)
 @main.route('/votar-item-pauta/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.VOTAR_ITEM_PAUTA)
 def votar_itempauta():
     if request.method == 'GET':
         itens_pauta_sugeridos = ItemPauta.query.filter(ItemPauta.status == 'EM_VOTACAO').all()
@@ -63,10 +63,13 @@ def votar_itempauta():
 
         itens_pauta_nao_votados_pelo_usuario = remover_itens_ja_votados(itens_pauta_sugeridos, current_user)
 
-        return nenhum_itempauta_ou_listar_com_op_voto \
+        return nenhum_itempauta_ou_listar_com_op_voto\
             (msg=u"Não há Itens de Pauta PENDENTES de voto por você", itens_pauta=itens_pauta_nao_votados_pelo_usuario,
-             template="itempauta/listar_itenspauta_em_votacao.html")
+             template="itempauta/listar_itenspauta.html")
     else:
+        if not request.form.get('link_op_voto'):
+            return redirect(url_for('main.votar_itempauta'))
+
         voto_e_num_itempauta = request.form['link_op_voto']
         voto_e_num_item_split = voto_e_num_itempauta.split(";")
         nome_voto = voto_e_num_item_split[0]
@@ -75,38 +78,48 @@ def votar_itempauta():
         it = ItemPauta.query.get(num_itempauta)
         voto = Voto(autor_email=autor, itempauta_num = it.num, op_nome=nome_voto)
 
-        comentario = request.form["comentario"]
-        if comentario:
-            c = ComentariosItemPauta(texto=comentario,it=it.num)
-
+        if 'comentario' in request.form:
+            comentario = request.form["comentario"]
+            gravatar_src = gravatar(request, current_user.id or "aditil@gmail.com", size=40)
+            morador = Morador.query.filter(Morador.usuario_id == autor).one() # somente morador pode comentar
+            c = ComentariosItemPauta(texto=comentario,it=it.num,autor=morador.num,gravatar_src=gravatar_src)
+            db.session.add(c)
         db.session.add(voto)
-        db.session.add(c)
         db.session.commit()
         flash("Item de Pauta votado com sucesso")
         return redirect(url_for('main.index'))
 
 
+@main.route('/detalhar-itenspauta/<num_it>/', methods = ['GET'])
+@login_required
+@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
+def detalhar_itempauta(num_it):
+    itempauta = ItemPauta.query.get(num_it)
+    opcoes_voto = get_op_voto_por_itempauta([itempauta])
+    comentarios = ComentariosItemPauta.query.filter(ComentariosItemPauta.itempauta == itempauta.num).all()
+    agora = datetime.now();
+    return render_template("itempauta/detalhar_itempauta.html", it = itempauta, opcoes_voto = opcoes_voto,
+                           comentarios = comentarios, agora = agora)
+
 ############################################
 ######## SUGESTÕES DE ITEM PAUTA ###########
 ############################################
 
-@permission_required(ConsensusTask.SUGERIR_ITEM_PAUTA)
 ## tem q permitir GET por causa do possivel refresh do usuario (post/redirect/get pattern)
 @main.route('/sugerir-item-pauta/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.SUGERIR_ITEM_PAUTA)
 def sugerir_itempauta():
     form = SugerirItemPautaForm(request.form)
     form.autor.data = current_user.id
+    display_div_erro = "display:none"
     if form.validate_on_submit():
         op = OpcaoVoto.query.get(form.votacao.data)
-#        desc_unicode = form.descricao.data.encode()
         sugestao = SugestaoItemPauta(titulo=form.titulo.data, autor=form.autor.data, desc=form.descricao.data)
         # se usuario selecionou 'outros' no combo 'opcoes de voto'
         if op.nome.__contains__("outras"):
-            combo_votacao_outros = request.form.getlist('txt_outra_opcao')
-            if combo_votacao_outros:
-                nova_op = incluir_opcao_voto(combo_votacao_outros, db)
-                sugestao.op_voto = nova_op.num
+            nova_op = incluir_opcao_voto(form.outra_opcao_voto.entries, db)
+            sugestao.op_voto = nova_op.num
         else:
             sugestao.op_voto = op.num
         db.session.add(sugestao)
@@ -116,26 +129,42 @@ def sugerir_itempauta():
 
         flash(u"Sugestão de Item de Pauta incluída com sucesso")
         return redirect(url_for('main.index'))
-    return render_template("sugestao/sugerir_itempauta.html", form = form)
+    elif form.errors:
+        display_div_erro = "display:inherit"
+    return render_template("sugestao/sugerir_itempauta.html", form = form, display=display_div_erro)
+
+# para validar as outras opcoes de voto no wtform
+@main.route('/add-opcao-voto/', methods = ['POST'])
+@login_required
+@permission_required(ConsensusTask.SUGERIR_ITEM_PAUTA)
+def add_opcao_voto():
+    form = SugerirItemPautaForm(request.form)
+    form.add_opcao_voto();
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
-@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-sugestoes-sem-avaliacao/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 def listar_sugestoes_sem_avaliacao():
+    form = ReprovarSugestaoForm(request.form)
+    return listar_sugestoes_nao_avaliadas(form=form)
+
+
+def listar_sugestoes_nao_avaliadas(form):
     sugestoes = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'NAO_AVALIADA').all()
     if not sugestoes:
         flash(u"Não há Sugestões de Item Pauta A AVALIAR")
         return redirect(url_for('main.index'))
     opcoes_voto = get_op_voto_por_sugestao(sugestoes)
-    ids = [(it.num) for it in sugestoes] # variavel utilizada na pag. "botoes_aprovar_reprovar.html"
+    ids = [(it.num) for it in sugestoes]  # variavel utilizada na pag. "botoes_aprovar_reprovar.html"
     return render_template("sugestao/listar_sugestoes_itempauta.html",
-                           itens_de_pauta = zip(sugestoes,ids), opcoes_voto=opcoes_voto)
+                           itens_de_pauta=zip(sugestoes, ids), opcoes_voto=opcoes_voto, form = form)
 
 
-@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 @main.route('/listar-sugestoes-reprovadas/', methods = ['GET'])
 @login_required
+@permission_required(ConsensusTask.LISTAR_ITEM_PAUTA)
 def listar_sugestoes_reprovadas():
     sugestoes_reprovadas = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'REPROVADA').all()
     return nenhum_itempauta_ou_listar_com_op_voto\
@@ -143,9 +172,9 @@ def listar_sugestoes_reprovadas():
                template="sugestao/listar_sugestoes_reprovadas.html")
 
 
-@permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 @main.route('/aprovar-sugestao/<num_sugestao>/', methods = ['POST'])
 @login_required
+@permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 def aprovar_sugestao(num_sugestao):
     sugestao = SugestaoItemPauta.query.get(num_sugestao)
     sugestao.status = 'APROVADA'
@@ -155,23 +184,26 @@ def aprovar_sugestao(num_sugestao):
     return "/"  # retorna a url em texto pq o sistema redireciona via javascript apos o confirm do modal
 
 
-@permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 @main.route('/reprovar-sugestao/<num_itempauta>', methods = ['POST'])
 @login_required
+@permission_required(ConsensusTask.AVALIAR_SUGESTAO_ITEM_PAUTA)
 def reprovar_sugestao(num_itempauta):
-    justificativa = request.form["justificativa"]
-    sugestao = SugestaoItemPauta.query.get(num_itempauta)
-    sugestao.status = 'REPROVADA'
-    sugestao.justif_reprovacao = justificativa
-    db.session.add(sugestao)
-    db.session.commit()
-    flash(u"Sugestão de Item Pauta REPROVADA com sucesso")
-    return redirect(url_for('main.index'))
+    form = ReprovarSugestaoForm(request.form)
+    if form.validate_on_submit():
+        justificativa = request.form["justificativa"]
+        sugestao = SugestaoItemPauta.query.get(num_itempauta)
+        sugestao.status = 'REPROVADA'
+        sugestao.justif_reprovacao = justificativa
+        db.session.add(sugestao)
+        db.session.commit()
+        flash(u"Sugestão de Item Pauta REPROVADA com sucesso")
+        return redirect(url_for('main.index'))
+    return listar_sugestoes_sem_avaliacao(form=form)
 
 
-@permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 @main.route('/add-itempauta-a-assembleia/', methods = ['POST'])
 @login_required
+@permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 def add_itempauta_a_assembleia():
     try:
         num_sugestao = request.form["sugestao_num"]
@@ -183,15 +215,13 @@ def add_itempauta_a_assembleia():
         return redirect(url_for('main.index'))
 
 
-@permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 @main.route('/atribuir-a-assembleia/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.ATRIBUIR_ASSEMBLEIA)
 def atribuir_sugestoes_a_assembleia():
     if request.method == 'GET':
         assembleias = Assembleia.query.filter_by(status='CRIADA').order_by("num").all()
-        # alimenta o combo
-        sugestoes_aprovadas = SugestaoItemPauta.query\
-                                .filter(SugestaoItemPauta.status == 'APROVADA').all()
+        sugestoes_aprovadas = SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'APROVADA').all()
 
         if not sugestoes_aprovadas:
             flash(u"Não há Sugestões de Item Pauta APROVADAS para atribuir à assembléias")
@@ -199,7 +229,7 @@ def atribuir_sugestoes_a_assembleia():
 
         return render_template("sugestao/atribuir_a_assembleia.html",
                     sugestoes=sugestoes_aprovadas, assembleias_combo=assembleias,
-                               assembleias_heading=assembleias, )
+                               assembleias_heading=assembleias)
     else:
         jsonString = request.form['mapa']
         assembleias_sugestoes = json.loads(jsonString)
@@ -220,16 +250,17 @@ def atribuir_sugestoes_a_assembleia():
             a = Assembleia.query.get(n)
             iniciar_assembleia(a) #verifica se a assembleia pode ser iniciada
 
-        flash(u"Itens de Pauta atribuídos com sucesso")
+        flash(u"Item de Pauta atribuído com sucesso")
         return "/"  # retorna a url em texto pq o sistema redireciona via javascript apos o confirm do modal
+
 
 ############################################
 ############### ASSEMBLEIAS ###############
 ############################################
 
-@permission_required(ConsensusTask.CRIAR_ASSEMBLEIA)
 @main.route('/criar-assembleia/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.CRIAR_ASSEMBLEIA)
 def criar_assembleia():
     if request.method == 'GET':
         return render_template("assembleia/criar_assembleia.html")
@@ -242,33 +273,32 @@ def criar_assembleia():
     return redirect(url_for('main.index'))
 
 
-@permission_required(ConsensusTask.LISTAR_ASSEMBLEIAS)
 ## tem q permitir GET por causa do possivel refresh do usuario (post/redirect/get pattern)
 @main.route('/listar-assembleias/<status>/', methods = ['GET','POST'])
 @login_required
+@permission_required(ConsensusTask.LISTAR_ASSEMBLEIAS)
 def listar_assembleias(status):
     pag_destino = ""
     agora = datetime.now();
 
-    # joinedload = eager loading dos itempautas
-    assembleias_criadas = Assembleia.query.filter(Assembleia.status == 'CRIADA').order_by("dt_hora_criacao").all()
-
     if status == '1':
-# verifica se já tem alguma sugestao criada para cada assembleia CRIADA, para exibir o botao de detalhamento na tela
+        # joinedload = eager loading dos itempautas
+        assembleias_criadas = Assembleia.query.filter(Assembleia.status == 'CRIADA').order_by("dt_hora_criacao").all()
+
+        # verifica se já tem alguma sugestao criada para cada assembleia CRIADA, para exibir o botao de detalhamento na tela
         busca_sugestoes = len(SugestaoItemPauta.query.filter(SugestaoItemPauta.status == 'APROVADA').all()) > 0
-        pag_destino = "CRIADAS"
+        pag_destino = "AGUARDANDO INÍCIO"
         if assembleias_criadas:
             return render_template("assembleia/listar_assembleias_criadas.html",
                                    assembleias=assembleias_criadas, agora=agora,
                                    ha_sugestoes_nao_atribuidas=busca_sugestoes)
     elif status == '2':
-        for a in assembleias_criadas:
-            datainicio = datetime.strptime(a.dataHoraInicio, '%d/%m/%Y %H:%M')
-
         ## 'em andamento' contendo itens de pauta
         lista = Assembleia.query.filter(Assembleia.status == 'EM_ANDAMENTO') \
                                 .filter(Assembleia.itemsPautas) \
                             .order_by("dt_hora_inicio").all()
+        if lista:
+            datainicio = datetime.strptime(lista[0].dataHoraInicio, '%d/%m/%Y %H:%M')
 
         pag_destino = "EM ANDAMENTO"
         if lista:
@@ -309,3 +339,27 @@ def iniciar_assembleia(assembleia):
             db.session.add(it)
             db.session.add(assembleia)
     db.session.commit()
+
+
+@main.route('/iniciar-assembleia/<num>/', methods = ['GET','POST'])
+@login_required
+@permission_required(ConsensusTask.ALTERAR_ASSEMBLEIA)
+def iniciar_assembleia_agora(num):
+    # assembleia.itemsPautas vem vazio... eager loading n funciona
+    itempautas = ItemPauta.query.filter(ItemPauta.assembleia == num).all()
+    if not itempautas:
+        flash("Assembleia nao pode ser iniciada pois nao possui nenhum Item de Pauta")
+        return redirect(url_for('main.index'))
+    assembleia = Assembleia.query.get(num)
+    assembleia.status = 'EM_ANDAMENTO'
+    formato = '%d/%m/%Y %H:%M'
+    agora = datetime.strptime(datetime.now().strftime(formato), formato)
+    assembleia.__dataHoraInicio = agora
+    for it in itempautas:
+        if it.status == "CRIADO":
+            it.status = 'EM_VOTACAO'
+            db.session.add(it)
+            db.session.add(assembleia)
+    db.session.commit()
+    flash(u"Assembléia iniciada com sucesso")
+    return redirect(url_for('main.index'))

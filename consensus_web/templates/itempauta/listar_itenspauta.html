@@ -1,26 +1,25 @@
 {% extends "index.html" %}
-{% from 'macros/exibir_corpo_itempauta.html' import corpo_itempauta_em_tabela %}
 
-{% block form_title %} Itens de Pauta da Assembléia {{ num_assembleia }} {% endblock %}
+{% from 'macros/exibir_itempauta_thumbnail.html' import list_itempauta with context %}
+
+{% block form_title %} Itens de Pauta {% endblock %}
 
 {% block form %}
-    <div class="table-responsive" align="center">
-        <table class="table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center">Título</th>
-                    <th class="text-center">Descrição</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Autor</th>
-                    <th class="text-center">Opções de Voto</th>
-                    <th class="text-center">Anexos</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="row" align="center">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    {% for it in itens_de_pauta %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption">
+              {{ list_itempauta(it, opcoes_voto) }}
+              <br>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+</div>
 
-                {{ corpo_itempauta_em_tabela(itens_de_pauta, opcoes_voto, ocultar_status) }}
+<!-- pinta cada option de uma cor  -->
+<!--<script src="{{ url_for('static', filename='js/style-opcoes-votacao.js') }}"></script> -->
 
-            </tbody>
-        </table>
-    </div>
 {% endblock %}

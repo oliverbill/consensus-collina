@@ -8,7 +8,7 @@
         {{ form.hidden_tag() }}
         <label class="col-sm-1 control-label">{{ form.email.label }}</label>
         <div class="col-sm-10" style="width: 30% !important">
-          {{ form.email(class="form-control", maxlength="50") }}
+          {{ form.email(class="form-control", maxlength="50", required="True") }}
             {% for error in form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}<br>
@@ -18,14 +18,14 @@
     <div class="form-group">
         <label class="col-sm-1 control-label">{{ form.nome.label }}</label>
         <div class="col-sm-4" style="width: 30% !important">
-            {{ form.nome(class="form-control", maxlength="20") }}
+            {{ form.nome(class="form-control", maxlength="20", required="True") }}
         {% for error in form.nome.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
         </div>
         <label class="col-sm-2 control-label">{{ form.sobrenome.label }}</label>
         <div class="col-sm-4" style="width: 30% !important">
-            {{ form.sobrenome(class="form-control", maxlength="20") }}
+            {{ form.sobrenome(class="form-control", maxlength="20", required="True") }}
         {% for error in form.sobrenome.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
@@ -36,7 +36,7 @@
         <label class="col-sm-2 control-label"> Data de Nascimento: </label>
         <div class="col-sm-10">
             <div class='input-group date' id='data_nascimento' style="width: 34% !important">
-                <input type='text' class="form-control" id="dt_nascimento_text" name="dt_nascimento_text">
+                <input type='text' class="form-control" id="dt_nascimento_text" name="dt_nascimento_text" required>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -54,12 +54,14 @@
                 <option value="F">Feminino</option>
             </select>
         </div>
+
         <label class="col-sm-3 control-label">{{ form.num_ap.label }}</label>
         <div class="col-sm-2" style="width: 10% !important">
             {{ form.num_ap(class="form-control", maxlength="4") }}
         {% for error in form.num_ap.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
+            <span style="color: red;" id="erro_num_ap"></span>
         </div>
         <label class="col-sm-1 control-label">{{ form.bloco.label }}</label>
         <div class="col-sm-2" style="width: 10% !important">
@@ -67,13 +69,14 @@
         {% for error in form.bloco.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
+            <span style="color: red;" id="erro_bloco"></span>
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-sm-2 control-label">Role:</label>
         <div class="col-sm-6" style="width: 40% !important">
-            <select id="roles" name="roles" class="form-control">
+            <select id="roles" name="roles" class="form-control" required>
                 <option value="" selected="selected"></option>
             {% for r in roles %}
                 <option value="{{ r.id }}">{{ r.nome }}</option>
@@ -91,7 +94,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">{{ form.senha.label }}</label>
         <div class="col-sm-10" style="width: 20% !important">
-            {{ form.senha(class="form-control", maxlength="10") }}
+            {{ form.senha(class="form-control", maxlength="10", required="True") }}
         {% for error in form.senha.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
@@ -111,17 +114,15 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">{{ form.confirma_senha.label }}</label>
         <div class="col-sm-10" style="width: 20% !important">
-            {{ form.confirma_senha(class="form-control", maxlength="10") }}
+            {{ form.confirma_senha(class="form-control", maxlength="10", required="True") }}
         {% for error in form.confirma_senha.errors %}
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}<br>
         </div>
     </div>
 
-    <div class="form-group">
-         <div class="col-sm-offset-4 col-sm-10">
-            {{ form.criar(class='btn btn-primary') }}
-        </div>
+    <div class="center-block text-center">
+        {{ form.criar(class='btn btn-primary') }}
     </div>
 </form>
 

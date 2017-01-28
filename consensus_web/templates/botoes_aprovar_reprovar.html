@@ -15,7 +15,12 @@
     <div class="collapse" id="{{ ids }}">
         <form action="{{ url_for('main.reprovar_sugestao',num_itempauta = it.num) }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <textarea name="justificativa" class="form-control" style="height: 60px !important;"></textarea>
+
+            {{ form.justificativa(class="form-control",style="height: 60px !important;", required="True") }}
+
+            {% for error in form.justificativa.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}<br>
             <br>
             <input type="submit" class="btn btn-default" id="ok" value="OK">
         </form>

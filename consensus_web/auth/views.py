@@ -5,7 +5,9 @@ from werkzeug.security import generate_password_hash
 from consensus_web import db
 from .forms import UserEditForm, UserForm, RoleForm, LoginForm
 
-from consensus_web.models import User, Role
+from consensus_web.models import User, Role, ConsensusTask
+
+from consensus_web.decorators import permission_required
 
 from wtforms.validators import Regexp
 from . import auth
@@ -26,8 +28,9 @@ def login():
             flash("Usuário ou senha inválida")
     return render_template('login.html', form=form)
 
-@login_required
 @auth.route('/admin/users',methods = ['GET','POST'])
+@login_required
+@permission_required(ConsensusTask.EXIBIR_USUARIOS)
 def exibir_usuarios():
     users = User.query.all()
     return render_template('admin/exibir_usuarios.html', users=users)
@@ -126,7 +129,7 @@ def excluir_user(user_email):
     u = User.query.get(user_email)
     db.session.delete(u)
     flash(u"Usuário excluído com sucesso")
-    return redirect(url_for('main.index'))
+    return "/"
 
 
 @login_required
@@ -135,7 +138,6 @@ def logout():
     logout_user()
     flash('Você foi desconectado do sistema')
     return redirect(url_for('auth.login'))
-
 
 ############################################################################################################
  ######################################### GERACAO DE TOKEN ##############################################

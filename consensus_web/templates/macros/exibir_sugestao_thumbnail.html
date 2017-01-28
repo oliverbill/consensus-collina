@@ -14,7 +14,11 @@
 
     {% if it.autor %}
     <p>
-        {{ it.autor }}
+        {{ it.nomeAutor }}
+    </p>
+    {% else %}
+    <p>
+        <font color="red"><b> [usuario removido] </b></font>
     </p>
     {% endif %}
 

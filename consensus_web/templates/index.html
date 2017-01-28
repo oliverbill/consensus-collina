@@ -19,6 +19,8 @@
             </li>
         </ul>
         <h3 align="center">{% block form_title %} {% endblock %}</h3>
+        <div align="right"><b>{{ current_user.nome }} {{ current_user.sobrenome }}</b></div>
+
     </div><!-- bs-example-navbar-collapse-1 -->
 </nav>
 
@@ -36,6 +38,7 @@
                 </a>
             </li>
 
+            {% if not current_user.is_administrador %}
             <li>
                 <a href="#">
                     <span class="fa-stack fa-lg pull-left">
@@ -48,22 +51,36 @@
                             Criar
                         </a>
                     </li>
+
+                    {% if current_user.role == 3 %}
                     <li>
                         <a href="{{ url_for('main.listar_sugestoes_sem_avaliacao') }}">
                             Avaliar
                         </a>
                     </li>
+                    {% endif %}
+
+                    {% if current_user.role == 3 or current_user.role == 4 %}
                     <li>
                         <a href="{{ url_for('main.listar_sugestoes_reprovadas') }}">
                             Listar Reprovadas
                         </a>
                     </li>
+                    {% endif %}
+
+                    {% if current_user.role == 3 %}
                     <li>
                         <a href="{{ url_for('main.atribuir_sugestoes_a_assembleia') }}">
                             Atribuir à Assembléia
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
+            </li>
+            {% endif %}
+
+            {% if current_user.role == 2 %}
+            <li>
                 <a href="#">
                     <span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-flag fa-stack-1x "></i>
@@ -76,56 +93,44 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            {% endif %}
+
+            {% if current_user.role == 3 or current_user.role == 4 %}
+            <li>
                 <a href="#">
                     <span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-flag fa-stack-1x "></i>
                     </span> Assembléia
                 </a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="{{ url_for('main.criar_assembleia') }}">
-                                Criar
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('main.listar_assembleias',status=1) }}">
-                                Aguardando Início
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('main.listar_assembleias',status=2) }}">
-                                Em Andamento
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('main.listar_assembleias',status=3) }}">
-                                Encerradas
-                            </a>
-                        </li>
-                    </ul>
-            </li>
-
-            <li class="divider"></li>
-
-            {% if current_user.is_authenticated %}
-
-            <li>
-                <a href="{{ url_for('auth.logout') }}">
-                    <span><i class="glyphicon glyphicon-off"></i></span>
-                    Sair
-                </a>
-            </li>
-
-            {% else %}
-            <li>
-                <a href="{{ url_for('auth.login') }}">
-                    <span><i class="fa fa-user fa-lg"></i></span>
-                     Entrar
-                </a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="{{ url_for('main.criar_assembleia') }}">
+                            Criar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.listar_assembleias',status=1) }}">
+                            Aguardando Início
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.listar_assembleias',status=2) }}">
+                            Em Andamento
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.listar_assembleias',status=3) }}">
+                            Encerradas
+                        </a>
+                    </li>
+                </ul>
             </li>
             {% endif %}
 
-            {% if current_user.is_administrador %}
+            <li class="divider"></li>
+
+
             <li>
                 <a href="#">
                     <span class="fa-stack fa-lg pull-left">
@@ -138,12 +143,30 @@
                             Listar Usuários
                         </a>
                     </li>
+                    {% if current_user.is_administrador %}
                     <li>
                         <a href="{{ url_for('auth.add_user') }}">
                             Criar Usuário
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
+            </li>
+
+
+            {% if current_user.is_authenticated %}
+            <li>
+                <a href="{{ url_for('auth.logout') }}">
+                    <span><i class="glyphicon glyphicon-off"></i></span>
+                    Sair
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for('auth.login') }}">
+                    <span><i class="fa fa-user fa-lg"></i></span>
+                     Entrar
+                </a>
             </li>
             {% endif %}
         </div>
@@ -153,16 +176,19 @@
     <!-- CONTEUDO DA PAGINA -->
     <div id="page-content-wrapper">
         <div class="container-fluid xyz">
-        {% block form %} {% endblock %}
+            {% block form %}
+
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-success" role="alert"  align="center">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <span class="sr-only"></span>
+                    {{ message }}
+                </div>
+                {% endfor %}
+
+            {% endblock %}
         </div>
         <br>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-success" role="alert"  align="center">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <span class="sr-only"></span>
-            {{ message }}
-        </div>
-        {% endfor %}
     </div>
     <!-- /#page-content-wrapper -->
 

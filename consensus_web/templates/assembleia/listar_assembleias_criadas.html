@@ -22,9 +22,13 @@
                   <p>
                       inicia em
                       <span class="label label-danger"> {{ a.dataHoraInicio }}</span>
+
+                      {% if current_user.role == 3 %}
+                        <a href="{{ url_for('main.iniciar_assembleia_agora',num = a.num) }}">iniciar agora</a>
+                      {% endif %}
                   </p>
                   <p>
-                      <div class="well"><h3 align="center">Assembléia {{ a.num }}</h3></div>
+                      <div class="well"><h3 align="center">Assembléia de {{ a.dataHoraInicio }}</h3></div>
                   </p>
                   {% if a.itemsPautas %}
                   <p align="center">
@@ -35,9 +39,9 @@
                       </a>
                   </p>
                   {% endif %}
-                  {% if not a.itemsPautas and ha_sugestoes_nao_atribuidas %}
+                  {% if not a.itemsPautas and ha_sugestoes_nao_atribuidas and current_user.role == 3 or current_user.role == 4 %}
                   <p align="center">
-                      Nenhum ItemPauta atribuído.
+                      Nenhum ItemPauta atribuído.<br>
                       <a href="{{ url_for('main.atribuir_sugestoes_a_assembleia') }}"> Atribuir >> </a>
                   </p>
                   {% endif %}

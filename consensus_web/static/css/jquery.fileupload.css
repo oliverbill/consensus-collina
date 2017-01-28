@@ -11,8 +11,9 @@
  */
 
 .fileinput-button {
-  position: relative;
+  /*position: relative;*/  /* estava zuando o botao*/
   overflow: hidden;
+  /*container: 'body';*/
 }
 .fileinput-button input {
   position: absolute;

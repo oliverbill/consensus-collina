@@ -12,14 +12,16 @@ jQuery(document).ready(function() {
         daysOfWeekDisabled: [0, 6],
         minDate: moment(),
         useCurrent: false,
-        sideBySide: true
+        sideBySide: true,
+        useStrict: true
       });
 
       $('#data_fim').datetimepicker({
         daysOfWeekDisabled: [0, 6],
         minDate: moment().add(1,'days'),
         useCurrent: false,
-        sideBySide: true
+        sideBySide: true,
+        useStrict: true
       });
 
 

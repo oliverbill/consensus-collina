@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">{{ form.titulo.label }}</label>
                 <div class="col-sm-10">
-                    {{ form.titulo(class="form-control") }}
+                    {{ form.titulo(class="form-control", required="true") }}
                 {% for error in form.titulo.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}<br>
@@ -29,7 +29,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">{{ form.descricao.label }}</label>
                 <div class="col-sm-10">
-                    {{ form.descricao(class="form-control",maxlength="2000") }}
+                    {{ form.descricao(class="form-control",maxlength="2000",required="true") }}
 
                     <label class="control-label" style="color: red;font-size:20px" id="count_char"></label>
 
@@ -54,31 +54,35 @@
 
             <hr class="col-sm-offset-2">
 
-            <div class="form-group" id="div_votacao_outros" style="display:none">
+            <div class="form-group" id="div_votacao_outros" style="{{ display }}">
                 <label class="col-sm-2 control-label"> Outras Opções: </label>
+
                 <div class="col-sm-5" id="combo_votacao_outros">
-                    <input type="text" name="txt_outra_opcao" class="form-control" style="width:50%"><br>
-                    <input type="text" name="txt_outra_opcao" class="form-control" style="width:50%">
+                    {{ form.outra_opcao_voto( name="txt_outra_opcao", required="true") }}
+
+                    {% for error in form.outra_opcao_voto.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}<br>
                 </div>
+
                 <br>
                 <div class="col-sm-5">
                     <button id="add_opcao_voto">Mais Opções</button>
                 </div>
             </div>
-
             <br>
 
-            <div class="form-group" align="center">
-                 <div class="col-sm-offset-2 col-sm-10">
-                    {{ form.salvar(class='btn btn-primary') }}
-                </div>
+            <div class="center-block text-center">
+               <input class="btn btn-primary" id="salvar" name="salvar" value="Salvar Sugestão" type="submit"/>
             </div>
+
         </form>
     </section>
 
     <script src="{{ url_for('static', filename='js/sugerir_itempauta.js') }}"></script>
 
 
+<!-- script que adiciona o painel com o thumbmail do arquivo e botoes de upload e cancel -->
 {% raw %}
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -111,6 +115,7 @@
     </tr>
 {% } %}
 </script>
+
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}

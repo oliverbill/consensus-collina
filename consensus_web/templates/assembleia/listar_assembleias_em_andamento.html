@@ -14,17 +14,17 @@
                 <div class="thumbnail">
                   <div class="caption">
                       <p>
-                          iniciada à
+                          iniciada em
                           <span class="label label-default" id="data-inicio" >
                                {{ moment(dt_inicio).fromTime(agora, refresh=True) }}
                           </span>
                       </p>
                       <p>
-                           termina em
+                          termina em
                             <span class="label label-danger"> {{ a.dataHoraFim }}</span>
                       </p>
                       <p>
-                          <div class="well"><h3 align="center">Assembléia {{ a.num }}</h3></div>
+                          <div class="well"><h3 align="center">Assembléia de {{ a.dataHoraInicio }}</h3></div>
                       </p>
                       {% if a.itemsPautas %}
                       <p align="center">

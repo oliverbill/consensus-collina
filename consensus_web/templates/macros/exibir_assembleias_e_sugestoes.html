@@ -1,6 +1,6 @@
 {% macro exibir_assembleias_e_sugestoes(assembleia, opcoes_voto) %}
 
-{% from 'macros/exibir_sugestao_thumbnail.html' import list_itempauta %}
+{% from 'macros/exibir_sugestao_thumbnail.html' import list_sugestao %}
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -20,7 +20,7 @@
               <div class="col-sm-6 col-md-4">
                 <div class="thumbnail">
                   <div class="caption">
-                      {{ list_itempauta(sug, opcoes_voto) }}
+                      {{ list_sugestao(sug, opcoes_voto) }}
                   </div>
 
                 </div>

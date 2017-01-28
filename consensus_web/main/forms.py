@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms.fields import StringField, BooleanField, SubmitField, PasswordField, TextAreaField, \
-    SelectField
+    SelectField, FieldList
 from wtforms.validators import DataRequired, Email
 
 from consensus_web.models import OpcaoVoto
@@ -13,15 +13,34 @@ class SugerirItemPautaForm(Form):
     autor = StringField('Autor: ')
 #    anexos = FileField('Anexo: ')
     votacao = SelectField(u'Opções de Voto: ', coerce=int)
-    salvar = SubmitField(u'Salvar Sugestão',render_kw={"class":"btn btn-default"})
-#    fazer_upload = SubmitField(u'Fazer Upload')
+    outra_opcao_voto = FieldList(StringField(u' '), min_entries=2)
 
     def __init__(self, *args, **kwargs):
         super(SugerirItemPautaForm, self).__init__(*args, **kwargs)
-#        assembleias = Assembleia.query.filter_by(_status='CRIADA').order_by("num").all()
-#        self.assembleia.choices =  [(a.num,a.dataHoraCriacao) for a in assembleias]
         opcoes_votacao = OpcaoVoto.query.all()
         self.votacao.choices = [(o.num,o.nome) for o in opcoes_votacao]
+
+    def add_opcao_voto(self):
+        self.outra_opcao_voto.append_entry(StringField(u' '))
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+        result = True
+
+        if self.votacao.data == 3:
+            for e in self.outra_opcao_voto.entries:
+                if not e.data:
+                    self.outra_opcao_voto.errors.append('campo obrigatorio')
+                    result = False
+        return result
+
+
+class ReprovarSugestaoForm(Form):
+    justificativa = TextAreaField(u'Justificativa: ', validators=[DataRequired("campo obrigatório")])
+
+    def __init__(self, *args, **kwargs):
+        super(ReprovarSugestaoForm, self).__init__(*args, **kwargs)
 
 
 # class CriarAssembleiaForm(Form):
