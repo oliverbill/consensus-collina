@@ -18,6 +18,10 @@ class Config:
     ADMIN_USER = os.environ.get('ADMIN_USER')
     ALLOWED_EXTENSIONS = set(['pdf', 'jpeg', 'bmp', 'jpg', 'png', 'gif', 'txt', 'doc', 'docx', 'xls', 'xlsx'])
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    UPLOAD_FOLDER = os.environ.get('CONSENSUS_UPLOAD_FOLDER')
+    THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+    MAX_FILE_SIZE = 500000000  # 5 MB
 
     @staticmethod
     def init_app(app):
@@ -26,11 +30,6 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SERVER_NAME = "localhost:5000" # em desenv, rodar serv do Flask, nao gunicorn
-# Sugerir Item Pauta - upload de anexos
-    UPLOAD_FOLDER = os.environ.get('CONSENSUS_UPLOAD_FOLDER')
-    THUMBNAIL_FOLDER = str(UPLOAD_FOLDER) + '/thumbnail/'
-    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
-    MAX_FILE_SIZE = 500000000  # 5 MB
     SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost/consensus'
 
 class TestingConfig(Config):
