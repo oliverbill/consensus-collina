@@ -49,7 +49,7 @@ def remover_itens_ja_votados(itens_pauta_sugeridos, current_user):
             itens_pauta_nao_votados.append(it)
     return itens_pauta_nao_votados
 
-def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, num_assembleia = None, template = None):
+def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, num_assembleia = None, template = None, is_votacao = None):
     if not itens_pauta:
         flash(msg)
         return redirect(url_for('main.index'))
@@ -63,7 +63,8 @@ def nenhum_itempauta_ou_listar_com_op_voto(msg, itens_pauta, num_assembleia = No
     return render_template(template or "itempauta/listar_itenspauta.html",
                            itens_de_pauta=itens_pauta,
                            opcoes_voto=opcoes_voto,
-                           num_assembleia = num_assembleia)
+                           num_assembleia = num_assembleia,
+                           is_votacao = is_votacao)
 
 
 def gravatar(request, email, size=100, default='identicon', rating='g'):

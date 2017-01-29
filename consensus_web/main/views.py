@@ -65,7 +65,7 @@ def votar_itempauta():
 
         return nenhum_itempauta_ou_listar_com_op_voto\
             (msg=u"Não há Itens de Pauta PENDENTES de voto por você", itens_pauta=itens_pauta_nao_votados_pelo_usuario,
-             template="itempauta/listar_itenspauta.html")
+             template="itempauta/listar_itenspauta.html", is_votacao = True)
     else:
         if not request.form.get('link_op_voto'):
             return redirect(url_for('main.votar_itempauta'))

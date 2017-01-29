@@ -46,11 +46,13 @@
                     </span> Sugestão de Item Pauta
                 </a>
                 <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    {% if current_user.role == 2 %}
                     <li>
                         <a href="{{ url_for('main.sugerir_itempauta') }}">
                             Criar
                         </a>
                     </li>
+                    {% endif %}
 
                     {% if current_user.role == 3 %}
                     <li>

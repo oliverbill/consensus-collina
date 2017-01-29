@@ -19,8 +19,9 @@ jQuery(document).ready(function() {
     // cria alert com sugestao dentro
     alert = "";
     alert = $("<div class='alert alert-info' role='alert'>"
-                +"<strong>Sugestão #"+sugestao.num+"</strong> => ' "
-                +sugestao.titulo+" ' (sugerido por "+sugestao.autor+")</div>");
+                +"<strong>Sugestão #"+sugestao.num+"</strong> => "
+                +sugestao.titulo
+                +" (sugerido por "+(sugestao.autor == null?"[autor excluído]":sugestao.autor)+")</div>");
 
     if (divSugestoes.find("div").length == 0){
         $("<br>").insertBefore(alert);
