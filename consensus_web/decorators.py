@@ -1,7 +1,7 @@
 from functools import wraps
 
-from flask import abort
-from flask_login import current_user
+from flask import abort,redirect, url_for
+from flask_login import current_user, AnonymousUserMixin
 
 from .models import ConsensusTask
 
@@ -10,7 +10,8 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-#            if isinstance(permission, str):
+            if current_user.is_anonymous:
+                return redirect(url_for('main.index'))
             if not current_user.pode(permissao=permission):
                abort(403)
             return f(*args, **kwargs)
