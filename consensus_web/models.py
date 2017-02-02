@@ -1,7 +1,7 @@
 from enum import Enum
 
 from flask import current_app
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.dialects.postgresql.base import TEXT
 from sqlalchemy.orm import relationship
@@ -310,7 +310,7 @@ class User(db.Model,UserMixin):
         self.dataNascimento = dataNascimento
         self.genero = genero
         self.__role = role
-        self.hash_senha = generate_password_hash(password)
+        self.hash_senha = password
         if num and bloco:
             morador = Morador(num_ap=num,bloco=bloco,user_id=self.__id)
             db.session.add(morador)
@@ -350,8 +350,7 @@ class User(db.Model,UserMixin):
 
     @property
     def is_administrador(self):
-        p = Permissao.query.filter(Permissao.nome == ConsensusTask.ADMINISTRAR_SISTEMA.name).one()
-        return self.pode(permissao = p)
+        return self.role == 1
 
     def is_senha_correta(self, password):
         return check_password_hash(self.hash_senha, password)
@@ -459,3 +458,8 @@ class Permissao(db.Model):
     def __repr__(self):
         return "[Id: " + self.__id + ",Nome: " + self.nome + "Roles: " \
            + self.roles_da_permissao
+
+
+class Anonymous(AnonymousUserMixin):
+  def __init__(self):
+    self.username = 'Guest'
