@@ -15,4 +15,4 @@ Online meeting/convention manager web system, designed to condo managers. Its ma
     Postgres 9.4 database
 
 # Access Consensus: 
-    https://consensus-collina.herokuapp.com
+https://consensus-collina.herokuapp.com/
