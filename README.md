@@ -1,19 +1,17 @@
 # consensus
-Projeto de desenvolvimento do sistema Consensus.
 
-O sistema Consensus é um gerenciador de assembléia online, inicialmente projetado para condomínios residenciais. 
-Suas principais funcionalidades são:
+Online meeting/convention manager web system, designed to condo managers. Its main functionalities are:
 
-- Criar Assembéia
-- Sugerir Item de Pauta
-- Atribuir Item de Pauta à Assembléia
-- Convocar Assembléia
-- Votar Item de Pauta
-- Responder Sugestão de Item de Pauta
-- Consultar Assembléia e Sugestões de Item de Pauta
+    Create Convention
+    Suggest Schedule Item
+    Attribute Schedule Item to Convention
+    Call Convention
+    Vote Schedule Item
+    Answer Schedule Item Suggestion
+    Query Convention and Schedule Item Suggestion
 
-As tecnologias utilizadas são:
+Its main techs are:
 
-- Bootstrap 3, JQuery 1.11.3 e HTML 5
-- Python 3.5 com Flask framework 0.11.1
-- Banco de dados MySQL 5.4
+    Bootstrap 3, JQuery 1.11.3 and HTML 5
+    Python 3.5 with Flask framework 0.11.1
+    Postgres 9.4 database
