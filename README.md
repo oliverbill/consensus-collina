@@ -1,6 +1,6 @@
 # Consensus
 
-Online meeting/convention manager web system, designed to condo managers. Its main functionalities are:
+Online meeting management app, designed to condo managers. Its main functionalities are:
     Create Convention
     Suggest Schedule Item
     Attribute Schedule Item to Convention
