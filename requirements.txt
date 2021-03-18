@@ -1,5 +1,5 @@
 Cython==0.25.2
-Pillow==3.4.2
+Pillow==8.1.1
 alembic==0.8.9
 Flask==0.12
 flask_login==0.4.0
